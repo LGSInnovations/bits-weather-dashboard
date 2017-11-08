@@ -1,6 +1,6 @@
-#Smart Ski Slope 
+# Smart Ski Slope 
 
-System of fog nodes to display temperature, humidity, and barometer data in real time on a user-friendly dashboard
+System of fog nodes to display real time temperatur, humidity, and barometer sensor data on a user-friendly dashboard
 
 ## Getting Started
 
