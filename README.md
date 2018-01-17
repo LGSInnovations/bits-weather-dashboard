@@ -1,8 +1,8 @@
 # Members
-Sam Anoff \\
-Jack Dinkel
-Kelsey Dowd
-Derek Gorthy
+Sam Anoff  
+Jack Dinkel  
+Kelsey Dowd  
+Derek Gorthy  
 Callie Jones
 
 # Smart Ski Slope 
