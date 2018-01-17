@@ -1,5 +1,5 @@
 # Members
-Sam Anoff
+Sam Anoff \\
 Jack Dinkel
 Kelsey Dowd
 Derek Gorthy
