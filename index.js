@@ -15,20 +15,33 @@ limitations under the License.
 **/
 
 var path = require('path'),
-    fs = require('fs'),
-    filePath = path.join(__dirname, 'data.csv');
+  fs = require('fs'),
+  exec = require('child_process').exec,
+  filePath = path.join(__dirname, 'data.csv'),
+  scriptName = path.join(__dirname, 'example_executable.py');
 
 
 class ModuleApp {
   load(messageCenter) {
     console.log('Weather Dashboard!');
+
+    /** Read data in from a file. Modify path depending on location **/
     fs.readFile(filePath, function(err, data)
-        {
-            if(err)
-                console.log(err)
-            else
-                console.log(data.toString())
-        });
+      {
+        if(err)
+          console.log(err)
+        else
+          console.log(data.toString())
+      });
+
+    /** Execute a command and capture output **/
+    exec("python "+scriptName, 
+      function(error, stdout, stderr) 
+      {
+        console.log(stdout);
+        console.log(stderr);
+      });
+    
   }
 
   unload() {
