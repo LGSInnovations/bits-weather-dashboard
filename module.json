@@ -1,5 +1,6 @@
 {
     "category": "System",
+    "version": "1.0.0",
     "scopes": [{
       "displayName": "Weather Dashboard",
       "name": "dashboard"

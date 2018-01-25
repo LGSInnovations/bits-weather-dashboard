@@ -13,9 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 **/
+
+var path = require('path'),
+    fs = require('fs'),
+    filePath = path.join(__dirname, 'data.csv');
+
+
 class ModuleApp {
   load(messageCenter) {
-    console.log('Hello, World!');
+    console.log('Weather Dashboard!');
+    fs.readFile(filePath, function(err, data)
+        {
+            if(err)
+                console.log(err)
+            else
+                console.log(data.toString())
+        });
   }
 
   unload() {
