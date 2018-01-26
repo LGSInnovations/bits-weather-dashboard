@@ -19,28 +19,53 @@ var path = require('path'),
   exec = require('child_process').exec,
   filePath = path.join(__dirname, 'data.csv'),
   scriptName = path.join(__dirname, 'example_executable.py');
+  tempDriver = path.join(__dirname, 'sensor_drivers/thermometer/pcsensor');
 
 
 class ModuleApp {
   load(messageCenter) {
     console.log('Weather Dashboard!');
 
-    /** Read data in from a file. Modify path depending on location **/
+    // Read data in from a file. Modify path depending on location
+    // TODO: Throw this in a loop
     fs.readFile(filePath, function(err, data)
       {
-        if(err)
+        if(err) {
           console.log(err)
-        else
-          console.log(data.toString())
+        }
+        else {
+          console.log("File successfully read!")
+          var split_data = data.toString().split(" ");
+          // Data format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
+
+          var date    = split_data[0];
+          var time    = split_data[1];
+          var celsius = split_data[3].slice(0, -1);
+
+          console.log("date: "    + date);
+          console.log("time: "    + time);
+          console.log("celsius: " + celsius);
+        }
       });
 
-    /** Execute a command and capture output **/
-    exec("python "+scriptName, 
-      function(error, stdout, stderr) 
-      {
-        console.log(stdout);
-        console.log(stderr);
-      });
+
+    // Execute a python script and capture output
+    //exec("python " + scriptName, 
+    //  function(error, stdout, stderr) 
+    //  {
+    //    console.log(stdout);
+    //    console.log(stderr);
+    //  });
+
+    // Execute a binary and capture output
+    //exec(tempDriver, 
+    //  function(error, stdout, stderr) 
+    //  {
+    //    console.log(stdout);
+    //    console.log(stderr);
+    //  });
+
+
     
   }
 
