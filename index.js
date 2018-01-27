@@ -54,11 +54,21 @@ limitations under the License.
     });
   }
 
+  function loopReadDataFromFile(filePath, delayInSeconds) {
+    console.log(filePath);
+    console.log(delayInSeconds);
+    readDataFromFile(filePath);
+    setTimeout(loopReadDataFromFile, 5000, filePath, delayInSeconds);
+    return true;
+  }
+
+
   class App {
     load(messageCenter) {
       console.log('Loaded Weather Dashboard Module!');
       console.log(captureExecutableOutput(filePath));
       console.log(readDataFromFile(filePath));
+      loopReadDataFromFile(filePath, 1);
       return true;
     }
 
