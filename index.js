@@ -14,64 +14,58 @@ See the License for the specific language governing permissions and
 limitations under the License.
 **/
 
-var path = require('path'),
-  fs = require('fs'),
-  exec = require('child_process').exec,
-  filePath = path.join(__dirname, 'data.csv'),
-  scriptName = path.join(__dirname, 'example_executable.py');
-  tempDriver = path.join(__dirname, 'sensor_drivers/thermometer/pcsensor');
+(() => {
+  'use strict';
 
+  var path = require('path'),
+    fs = require('fs'),
+    exec = require('child_process').exec,
+    filePath = path.join(__dirname, 'data.csv'),
+    scriptName = path.join(__dirname, 'example_executable.py');
 
-class ModuleApp {
-  load(messageCenter) {
-    console.log('Weather Dashboard!');
+  
 
-    // Read data in from a file. Modify path depending on location
-    // TODO: Throw this in a loop
-    fs.readFile(filePath, function(err, data)
-      {
-        if(err) {
-          console.log(err)
-        }
-        else {
-          console.log("File successfully read!")
-          var split_data = data.toString().split(" ");
-          // Data format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
-
-          var date    = split_data[0];
-          var time    = split_data[1];
-          var celsius = split_data[3].slice(0, -1);
-
-          console.log("date: "    + date);
-          console.log("time: "    + time);
-          console.log("celsius: " + celsius);
-        }
-      });
-
-
-    // Execute a python script and capture output
-    //exec("python " + scriptName, 
-    //  function(error, stdout, stderr) 
-    //  {
-    //    console.log(stdout);
-    //    console.log(stderr);
-    //  });
-
-    // Execute a binary and capture output
-    //exec(tempDriver, 
-    //  function(error, stdout, stderr) 
-    //  {
-    //    console.log(stdout);
-    //    console.log(stderr);
-    //  });
-
-
-    
+  function captureExecutableOutput(filePath) {
+    return exec("python " + scriptName, 
+      function(error, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+    });
   }
 
-  unload() {
-    console.log('Goodbye!');
-  }
-}
+  function readDataFromFile(filePath) {
+    return fs.readFile(filePath, function(err, data){
+      if(err) {
+        console.log(err)
+      }
+      else {
+        console.log("File successfully read!")
+        var split_data = data.toString().split(" ");
+        // Data format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
 
-module.exports = new ModuleApp();
+        var date    = split_data[0];
+        var time    = split_data[1];
+        var celsius = split_data[2].slice(0, -1);
+
+        console.log("date: "    + date);
+        console.log("time: "    + time);
+        console.log("celsius: " + celsius);
+      }
+    });
+  }
+
+  class App {
+    load(messageCenter) {
+      console.log('Loaded Weather Dashboard Module!');
+      console.log(captureExecutableOutput(filePath));
+      console.log(readDataFromFile(filePath));
+      return true;
+    }
+
+    unload() {
+      return Promise.resolve();
+    }
+  }
+
+  module.exports = new App();
+})();
