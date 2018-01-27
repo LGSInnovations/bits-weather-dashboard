@@ -23,7 +23,21 @@ limitations under the License.
     filePath = path.join(__dirname, 'data.csv'),
     scriptName = path.join(__dirname, 'example_executable.py');
 
-  
+  /** 
+  // Issues with this call to Mongo - Collection name must be a string
+  // 
+  function callMongoAPI(messageCenter) {
+    setTimeout(callMongoAPI, 5000, messageCenter);
+    const data = {
+      'name': 'bob',
+      'password': 'other_data'
+    };
+    return messageCenter.sendRequest('mongodb#Collection insertOne', null, data)
+    .then(() => {
+      console.log('Mongo was called!')
+    });
+  }
+  **/
 
   function captureExecutableOutput(filePath) {
     return exec("python " + scriptName, 
@@ -68,7 +82,8 @@ limitations under the License.
       console.log('Loaded Weather Dashboard Module!');
       console.log(captureExecutableOutput(filePath));
       console.log(readDataFromFile(filePath));
-      loopReadDataFromFile(filePath, 1);
+      //callMongoAPI(messageCenter);
+      //loopReadDataFromFile(filePath, 1);
       return true;
     }
 
