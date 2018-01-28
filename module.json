@@ -2,12 +2,12 @@
     "category": "System",
     "version": "1.0.0",
     "scopes": [{
-      "displayName": "Weather Dashboard",
-      "name": "dashboard"
+      "displayName": "Public",
+      "name": "public"
     }], 
     "displayName": "Weather Dashboard",
     "name": "weather-dashboard",
-    "appDir": "app/",
+    "appDir": "app",
     "contentImport": "elements/bits-weather-dashboard-app/bits-weather-dashboard-app.html",
     "contentElement": "weather-dashboard-app",
     "version": "",

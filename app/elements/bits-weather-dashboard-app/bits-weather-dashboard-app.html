@@ -14,8 +14,9 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../base-message-center/base-message-center.html">
 
-<dom-module id="bits-weather-dashboard-app">
+<dom-module id="weather-dashboard-app">
   <template>
     <style>
       :host {
@@ -23,15 +24,98 @@
       }
     </style>
 
-    <h1>Hello, World!</h1>
+    <base-message-center id="messageCenter"></base-message-center>
 
   </template>
   <script>
   (() => {
     'use strict';
+    
+    /// mongo testing ///
+    function getBitsSystemId(messageCenter) {
+      return messageCenter.sendRequest('base#System bitsId')
+      .then((systemId) => {
+        console.log(`BITS IDID ${systemId}.`);
+      })
+      .catch((err) => {
+        console.error('Failed to get the BITS system id:', err);
+      });
+    }
+    
+    /*function getMongoIndexes(messageCenter) {
+  	  return messageCenter.sendRequest('mongodb#Collection indexes')
+  	  .then((response) => {
+  		console.log(`mongodb indexes is ${response}.`);
+  	  })
+  	  .catch((err) => {
+  		console.log('Failed to get the mongodb indexes:', err);
+  	  });
+    }*/
+    
+    /*function getMongoList(messageCenter) {
+    	return messageCenter.sendRequest('mongodb#Collection find')
+    	.then((testData) => {
+    		console.log(`Got ${testData.length} test data.`);
+    		console.log(`yoooo ${testData}`);
+    	})
+    	.catch((err) => {
+    		console.error('Failed to get the mongo list:', err);
+    	});
+    }*/
+    
+  function getMongoInsert(messageCenter) {
+    return messageCenter.sendRequest('mongodb#Collection insertOne', null, 'user', {'name': 'bob', 'age': '39'}, {dbName: 'user'})
+    .then(() => {
+      console.log(`testing mongoInsert`);
+    })
+    .catch((err) => {
+      console.error('Failed to test things out:', err);
+    });
+  }
+  
+  function getMongoFind(messageCenter) {
+  	return messageCenter.sendRequest('mongodb#Collection find', null, 'user', {'name':'callie'}, {dbName: 'user'})
+  	.then((response) => {
+  	  console.log(`testing mongoFind response was ${response}`);
+  	  console.log(`response length ${response.length}`);
+  	})
+    .catch((err) => {
+      console.error('Failed finding doc in collection user error =:', err);
+    });
+  }
+  
+    function getMongoTest(messageCenter) {
+    	return messageCenter.sendRequest('mongodb#Collection find', null, 'user', {'name':'callie'}, {dbName: 'user'})
+    	.then((response) => {
+    		console.log(`testing mongoTest Got ${response.length} mongo(s).`);
+    		console.log(`a ${Object.values(response)}`);
+    	})
+    	.catch((err) => {
+    		console.error('Failed to get the mongo list:', err);
+    	});
+    }
+    
+    function onInitialized() {
+      console.log('Base isIS initialized');
+    }
+
+    function addBaseInitializedListener(messageCenter) {
+      return messageCenter.addSocketEventListener('base#Base initialized', onInitialized); // Be sure to remember to use addSocketEventListener and not addEventListener
+    }
+    
+    /// mongo testing ///
 
     Polymer({
-      is: 'bits-weather-dashboard-app'
+      is: 'weather-dashboard-app',
+      
+      ready: function() {
+        const messageCenter = this.$.messageCenter;
+        getBitsSystemId(messageCenter);
+        //getMongoFind(messageCenter);
+        getMongoInsert(messageCenter);
+        getMongoTest(messageCenter);
+        addBaseInitializedListener(messageCenter);
+      }
     });
   })();
   </script>
