@@ -61,31 +61,41 @@
     	.catch((err) => {
     		console.error('Failed to get the mongo list:', err);
     	});
+    }
+    
+    function getMongoInsert(messageCenter) {
+      return messageCenter.sendRequest('mongodb#Collection insertOne')
+      .then(() => {
+        console.log(`testing mongoInsert`);
+      })
+      .catch((err) => {
+        console.error('Failed to test things out:', err);
+      });
     }*/
     
-  function getMongoInsert(messageCenter) {
-    return messageCenter.sendRequest('mongodb#Collection insertOne', null, 'user', {'name': 'bob', 'age': '39'}, {dbName: 'user'})
-    .then(() => {
-      console.log(`testing mongoInsert`);
-    })
-    .catch((err) => {
-      console.error('Failed to test things out:', err);
-    });
-  }
+    function MongoCursor(messageCenter){
+      return messageCenter.sendRequest('mongodb#Cursor toArray')
+      .then((response) => {
+        console.log(`testing cursor ${response}`);
+      })
+      .catch((err) => {
+        console.error('failed error is :',err);
+      });
+    }
   
-  function getMongoFind(messageCenter) {
-  	return messageCenter.sendRequest('mongodb#Collection find', null, 'user', {'name':'callie'}, {dbName: 'user'})
-  	.then((response) => {
-  	  console.log(`testing mongoFind response was ${response}`);
-  	  console.log(`response length ${response.length}`);
-  	})
-    .catch((err) => {
-      console.error('Failed finding doc in collection user error =:', err);
-    });
-  }
+    function getMongoFind(messageCenter) {
+      return messageCenter.sendRequest('mongodb#Collection find', null, 'user', {'name':'callie'}, {dbName: 'user'})
+      .then((response) => {
+        console.log(`testing mongoFind response was ${response}`);
+        console.log(`response length ${response.length}`);
+      })
+      .catch((err) => {
+        console.error('Failed finding doc in collection user error =:', err);
+      });
+    }
   
     function getMongoTest(messageCenter) {
-    	return messageCenter.sendRequest('mongodb#Collection find', null, 'user', {'name':'callie'}, {dbName: 'user'})
+    	return messageCenter.sendRequest('mongodb#Collection find')
     	.then((response) => {
     		console.log(`testing mongoTest Got ${response.length} mongo(s).`);
     		console.log(`a ${Object.values(response)}`);
@@ -112,8 +122,9 @@
         const messageCenter = this.$.messageCenter;
         getBitsSystemId(messageCenter);
         //getMongoFind(messageCenter);
-        getMongoInsert(messageCenter);
+        //getMongoInsert(messageCenter);
         getMongoTest(messageCenter);
+        MongoCursor
         addBaseInitializedListener(messageCenter);
       }
     });

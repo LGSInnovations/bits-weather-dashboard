@@ -62,14 +62,9 @@ limitations under the License.
   ];
   
   //insertOne(CollectionConstants.REQUEST.INSERT_ONE, null, this._collectionName, doc, {dbName: this._dbName, options: options})
-  function MongoInsert(messageCenter) {
-    return messageCenter.sendRequest('mongodb#Collection insertOne', null, 'user', {'name': 'bob', 'age': '39'}, {dbName: 'user'})
-    .then(() => {
-      console.log(`testing mongoInsert`);
-    })
-    .catch((err) => {
-      console.error('Failed to test getMongoInsert:', err);
-    });
+  function MongoInsert(metadata, data) {
+    testData.push(data);
+    Promise.resolve(testData);
   }
   
   function MongoFind(messageCenter) {
@@ -83,20 +78,15 @@ limitations under the License.
     });
   }
   
-  function MongoIndexes(metadata) {
-  	return messageCenter.sendRequest('mongodb#Collection indexes')
-  	.then((response) => {
-  		console.log(`mongodb response is ${response}.`);
-  	})
-  	.catch((err) => {
-  		console.log('Failed to get the mongodb indexes:', err);
-  	});
+  function MongoCursor(messageCenter){
+    return messageCenter.sendRequest('mongodb#Cursor toArray')
+    .then((response) => {
+      console.log(`testing cursor ${response}`);
+    })
+    .catch((err) => {
+      console.error('failed error is :',err);
+    });
   }
-  
-  /*function MongoCreate(metadata, data) {
-  	testData.push(data);
-  	return Promise.resolve();
-  }*/
   
   function MongoTest(metadata) {
     return Promise.resolve(testData);
@@ -153,8 +143,9 @@ limitations under the License.
       //this._dbName = 'user';
       //this._collectionName = 'user';
       //this._messenger.addRequestListener('mongodb#Collection find', {scopes: ['public']}, getMongoFind);
-      this._messenger.addRequestListener('mongodb#Collection insertOne', {scopes: ['public']}, MongoInsert);
+      //this._messenger.addRequestListener('mongodb#Collection insertOne', {scopes: ['public']}, MongoInsert);
       this._messenger.addRequestListener('mongodb#Collection find', {scopes: ['public']}, MongoTest);
+      this._messenger.addRequestListener('mongodb#Cursor toArray', {scopes: ['public']}, MongoCursor);
       //this._messenger.addRequestListener('mongodb#Collection insertOne', {scopes: ['public']}, callMongoAPI);
     }
   
