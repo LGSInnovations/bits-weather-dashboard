@@ -118,21 +118,30 @@ limitations under the License.
     });
   }
 
-  function interpretThermometerString(str) {
+  function interpretThermometerString(file) {
       // assumed str format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
-      var split_str = String(str).trim().split(" ");
-      assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + str);
+      var lineReader = require('readline').createInterface({
+        input: require('fs').createReadStream('/home/kelsey/projects/bits/data/base/modules/modules/bits-weather-dashboard/data.csv')
+      });
 
-      var date    = split_str[0];
-      var time    = split_str[1];
-      var celsius = split_str[4].slice(0, -1);
+      lineReader.on('line', function (line) {
+          console.log('Line from file: ', line);
+          var split_str = String(line).trim().split(" ");
+          assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + line);
 
-      assert(date.length == 10, "Date is incorrectly formatted: " + date);
-      assert(time.length ==  8, "Time is incorrectly formatted: " + time);
+          var date    = split_str[0];
+          var time    = split_str[1];
+          var celsius = split_str[4].slice(0, -1);
 
-      console.log("date: "    + date);
-      console.log("time: "    + time);
-      console.log("celsius: " + celsius);
+          assert(date.length == 10, "Date is incorrectly formatted: " + date);
+          assert(time.length ==  8, "Time is incorrectly formatted: " + time);
+
+          console.log("date: "    + date);
+          console.log("time: "    + time);
+          console.log("celsius: " + celsius);
+      });
+
+
 
       //return [date, time, celsius];
   }
