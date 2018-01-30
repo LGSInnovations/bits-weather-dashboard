@@ -30,11 +30,12 @@ limitations under the License.
     });
   }
 
-  var path = require('path'),
-    fs = require('fs'),
-    exec = require('child_process').exec,
-    filePath = path.join(__dirname, 'data.csv'),
-    scriptName = path.join(__dirname, 'example_executable.py');
+  var path       = require('path'),
+      fs         = require('fs'),
+      exec       = require('child_process').exec,
+      filePath   = path.join(__dirname, 'data.csv'),
+      scriptName = path.join(__dirname, 'example_executable.py'),
+      assert     = require('assert');
 
    
   // Issues with this call to Mongo - Collection name must be a string
@@ -106,31 +107,42 @@ limitations under the License.
     });
   }
 
-  function readDataFromFile(filePath) {
-    return fs.readFile(filePath, function(err, data){
-      if(err) {
-        console.log(err)
+  function readDataFromFile(filePath, callback) {
+    var content;
+    fs.readFile(filePath, function read(err, data) {
+      if (err) {
+        throw err;
       }
-      else {
-        console.log("File successfully read!")
-        var split_data = data.toString().split(" ");
-        // Data format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
-
-        var date    = split_data[0];
-        var time    = split_data[1];
-        var celsius = split_data[2].slice(0, -1);
-
-        console.log("date: "    + date);
-        console.log("time: "    + time);
-        console.log("celsius: " + celsius);
-      }
+      content = data;
+      callback(data);
     });
   }
 
+  function interpretThermometerString(str) {
+      // assumed str format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
+      var split_str = String(str).trim().split(" ");
+      assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + str);
+
+      var date    = split_str[0];
+      var time    = split_str[1];
+      var celsius = split_str[4].slice(0, -1);
+
+      assert(date.length == 10, "Date is incorrectly formatted: " + date);
+      assert(time.length ==  8, "Time is incorrectly formatted: " + time);
+
+      console.log("date: "    + date);
+      console.log("time: "    + time);
+      console.log("celsius: " + celsius);
+
+      //return [date, time, celsius];
+  }
+
   function loopReadDataFromFile(filePath, delayInSeconds) {
-    console.log(filePath);
-    console.log(delayInSeconds);
-    readDataFromFile(filePath);
+    console.log("filepath: " + filePath);
+    console.log("delay: "    + delayInSeconds);
+    var data = readDataFromFile(filePath, interpretThermometerString);
+    //var thermometer_values = interpretThermometerString(data);
+
     setTimeout(loopReadDataFromFile, 5000, filePath, delayInSeconds);
     return true;
   }
@@ -155,9 +167,11 @@ limitations under the License.
       .then(() => messageCenter.sendEvent('weather-dashboard#App', {scopes: ['public']}, {type: 'loaded'}))
       .then(() => messageCenter.addEventListener('base#Base initialized', {scopes: null}, onInitialized))
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      .then(() => console.log(captureExecutableOutput(filePath)))
-      .then(() => console.log(readDataFromFile(filePath)));
+      //.then(() => console.log(captureExecutableOutput(filePath)))
+
+      //.then(() => console.log(readDataFromFile(filePath)));
       //callMongoAPI(messageCenter);
+      .then(() => console.log(loopReadDataFromFile(filePath, 1)));
       //loopReadDataFromFile(filePath, 1);
       //return true;
     }
