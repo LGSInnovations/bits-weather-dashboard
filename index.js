@@ -17,19 +17,8 @@ limitations under the License.
 (() => {
   'use strict';
   
-  const Messenger = global.helper.Messenger;
+  const CrudManager = require('./lib/crud-manager/crud-manager.js');
   
-  //example 
-  function getBitsSystemId(messageCenter) {
-    return messageCenter.sendRequest('base#System bitsId')
-    .then((systemId) => {
-      console.log(`BITS IDID is ${systemId}.`);
-    })
-    .catch((err) => {
-      console.error('Failed to get the BITS system id:', err);
-    });
-  }
-
   var path       = require('path'),
       fs         = require('fs'),
       exec       = require('child_process').exec,
@@ -39,7 +28,7 @@ limitations under the License.
 
    
   // Issues with this call to Mongo - Collection name must be a string
-  // 
+  /*
   function callMongoAPI(messageCenter) {
     setTimeout(callMongoAPI, 5000, messageCenter);
     const data = {
@@ -50,54 +39,8 @@ limitations under the License.
     .then(() => {
       console.log('Mongo was called!')
     });
-  }
+  }*/
   
-
-  /// mongodb module connection & data retrieval/insertion testing ///
-  const testData = [
-  	{collectionName: 'user', dbName: 'user'}
-  ];
-  
-  const data = [
-     {'name': 'bob', 'age': '39'}
-  ];
-  
-  //insertOne(CollectionConstants.REQUEST.INSERT_ONE, null, this._collectionName, doc, {dbName: this._dbName, options: options})
-  function MongoInsert(metadata, data) {
-    testData.push(data);
-    Promise.resolve(testData);
-  }
-  
-  function MongoFind(messageCenter) {
-  	return messageCenter.sendRequest('mongodb#Collection find', null, 'user', {'name':'callie'}, {dbName: 'user'})
-  	.then((response) => {
-  	  console.log(`testing mongoFind response was ${response}`);
-  	  console.log(`response length ${response.length}`);
-  	})
-    .catch((err) => {
-      console.error('Failed finding doc in collection user error =:', err);
-    });
-  }
-  
-  function MongoCursor(messageCenter){
-    return messageCenter.sendRequest('mongodb#Cursor toArray')
-    .then((response) => {
-      console.log(`testing cursor ${response}`);
-    })
-    .catch((err) => {
-      console.error('failed error is :',err);
-    });
-  }
-  
-  function MongoTest(metadata) {
-    return Promise.resolve(testData);
-  }
-
-  function onInitialized() {
-    console.log('Base is initialized');
-  }	
-  
-  /// mongo testing ///
 
   function captureExecutableOutput(filePath) {
     return exec("python " + scriptName, 
@@ -151,35 +94,22 @@ limitations under the License.
   class App {
   
     constructor() {
-      this._messenger = new global.helper.Messenger();
-      //this._dbName = 'user';
-      //this._collectionName = 'user';
-      //this._messenger.addRequestListener('mongodb#Collection find', {scopes: ['public']}, getMongoFind);
-      //this._messenger.addRequestListener('mongodb#Collection insertOne', {scopes: ['public']}, MongoInsert);
-      this._messenger.addRequestListener('mongodb#Collection find', {scopes: ['public']}, MongoTest);
-      this._messenger.addRequestListener('mongodb#Cursor toArray', {scopes: ['public']}, MongoCursor);
-      //this._messenger.addRequestListener('mongodb#Collection insertOne', {scopes: ['public']}, callMongoAPI);
+      this._crudManager = new CrudManager();
     }
   
     load(messageCenter) {
-      return getBitsSystemId(messageCenter)
-      .then(() => this._messenger.load(messageCenter))
-      .then(() => messageCenter.sendEvent('weather-dashboard#App', {scopes: ['public']}, {type: 'loaded'}))
-      .then(() => messageCenter.addEventListener('base#Base initialized', {scopes: null}, onInitialized))
+      return Promise.resolve();
       .then(() => console.log('Loaded Weather Dashboard Module!'))
       //.then(() => console.log(captureExecutableOutput(filePath)))
-
-      //.then(() => console.log(readDataFromFile(filePath)));
-      //callMongoAPI(messageCenter);
-      .then(() => console.log(loopReadDataFromFile(filePath, 1)));
+      .then(() => console.log(loopReadDataFromFile(filePath, 1)))
+      .then(() => this._crudManager.load(messageCenter,"date","time","data"));
       //loopReadDataFromFile(filePath, 1);
       //return true;
     }
 
     unload() {
       return Promise.resolve()
-      .then(() => messageCenter.removeEventListener('base#Base initialized', onInitialized))
-      .then(() => this._messenger.unload());
+      .then(() => this._crudManager.unload(messageCenter));
     }
   }
 
