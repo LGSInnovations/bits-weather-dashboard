@@ -25,6 +25,10 @@ limitations under the License.
       filePath   = path.join(__dirname, 'data.csv'),
       scriptName = path.join(__dirname, 'example_executable.py'),
       assert     = require('assert');
+      
+  var date = "date";
+  var time = "time";
+  var celsius = "celsius";
 
    
   // Issues with this call to Mongo - Collection name must be a string
@@ -102,7 +106,7 @@ limitations under the License.
       .then(() => console.log('Loaded Weather Dashboard Module!'))
       //.then(() => console.log(captureExecutableOutput(filePath)))
       .then(() => console.log(loopReadDataFromFile(filePath, 1)))
-      .then(() => this._crudManager.load(messageCenter,"date","time","data"));
+      .then(() => this._crudManager.load(messageCenter,date,time,celsius));
       //loopReadDataFromFile(filePath, 1);
       //return true;
     }

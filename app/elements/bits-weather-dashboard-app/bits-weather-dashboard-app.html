@@ -14,119 +14,58 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../base-message-center/base-message-center.html">
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
+<link rel="import" href="../base-shared-styles/base-shared-styles.html">
 
 <dom-module id="weather-dashboard-app">
   <template>
     <style>
       :host {
         display: block;
+        position: relative;
+        height: 100%;
       }
     </style>
+    
+    <base-drawer-layout
+      id="layout"
+      m-name="weather-dashboard"
+      m-icon="icons:swap-vert"
+      m-display-name="Weather Dashboard"
+      pages="[[pages]]"
+      page-name="{{currentPage}}"
+      default-page-name="crud">
+    </base-drawer-layout>
 
-    <base-message-center id="messageCenter"></base-message-center>
+    <paper-toast id="snackbar"></paper-toast>
 
   </template>
   <script>
   (() => {
     'use strict';
-    
-    /// mongo testing ///
-    function getBitsSystemId(messageCenter) {
-      return messageCenter.sendRequest('base#System bitsId')
-      .then((systemId) => {
-        console.log(`BITS IDID ${systemId}.`);
-      })
-      .catch((err) => {
-        console.error('Failed to get the BITS system id:', err);
-      });
-    }
-    
-    /*function getMongoIndexes(messageCenter) {
-  	  return messageCenter.sendRequest('mongodb#Collection indexes')
-  	  .then((response) => {
-  		console.log(`mongodb indexes is ${response}.`);
-  	  })
-  	  .catch((err) => {
-  		console.log('Failed to get the mongodb indexes:', err);
-  	  });
-    }*/
-    
-    /*function getMongoList(messageCenter) {
-    	return messageCenter.sendRequest('mongodb#Collection find')
-    	.then((testData) => {
-    		console.log(`Got ${testData.length} test data.`);
-    		console.log(`yoooo ${testData}`);
-    	})
-    	.catch((err) => {
-    		console.error('Failed to get the mongo list:', err);
-    	});
-    }
-    
-    function getMongoInsert(messageCenter) {
-      return messageCenter.sendRequest('mongodb#Collection insertOne')
-      .then(() => {
-        console.log(`testing mongoInsert`);
-      })
-      .catch((err) => {
-        console.error('Failed to test things out:', err);
-      });
-    }*/
-    
-    function MongoCursor(messageCenter){
-      return messageCenter.sendRequest('mongodb#Cursor toArray')
-      .then((response) => {
-        console.log(`testing cursor ${response}`);
-      })
-      .catch((err) => {
-        console.error('failed error is :',err);
-      });
-    }
-  
-    function getMongoFind(messageCenter) {
-      return messageCenter.sendRequest('mongodb#Collection find', null, 'user', {'name':'callie'}, {dbName: 'user'})
-      .then((response) => {
-        console.log(`testing mongoFind response was ${response}`);
-        console.log(`response length ${response.length}`);
-      })
-      .catch((err) => {
-        console.error('Failed finding doc in collection user error =:', err);
-      });
-    }
-  
-    function getMongoTest(messageCenter) {
-    	return messageCenter.sendRequest('mongodb#Collection find')
-    	.then((response) => {
-    		console.log(`testing mongoTest Got ${response.length} mongo(s).`);
-    		console.log(`a ${Object.values(response)}`);
-    	})
-    	.catch((err) => {
-    		console.error('Failed to get the mongo list:', err);
-    	});
-    }
-    
-    function onInitialized() {
-      console.log('Base isIS initialized');
-    }
-
-    function addBaseInitializedListener(messageCenter) {
-      return messageCenter.addSocketEventListener('base#Base initialized', onInitialized); // Be sure to remember to use addSocketEventListener and not addEventListener
-    }
-    
-    /// mongo testing ///
+   
 
     Polymer({
       is: 'weather-dashboard-app',
-      
-      ready: function() {
-        const messageCenter = this.$.messageCenter;
-        getBitsSystemId(messageCenter);
-        //getMongoFind(messageCenter);
-        //getMongoInsert(messageCenter);
-        getMongoTest(messageCenter);
-        MongoCursor
-        addBaseInitializedListener(messageCenter);
-      }
+      behaviors: [Polymer.IronResizableBehavior],
+      properties: {
+        pages: {
+          type: Array,
+          value: () => {
+            return [{
+              name: 'crud',
+              element: 'weather-dashboard-app-crud',
+              import: '/elements/bits-weather-dashboard-app/bits-weather-app-crud.html',
+              displayName: 'Crud',
+              icon: 'icons:perm-device-information'
+            }];
+          }
+        }
+      },
+      toggleSidenav: function() {
+        this.$.layout.toggleSidenav();
+      }   
     });
   })();
   </script>
