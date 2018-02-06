@@ -12,7 +12,8 @@
     "contentElement": "weather-dashboard-app",
     "version": "",
     "dependencies": {
-        "bits-base": "^2.0.0"
+        "bits-base": "^2.0.0",
+        "mongodb": "^1.0.0"
     },
     "icon": "icons:swap-vert"
 }

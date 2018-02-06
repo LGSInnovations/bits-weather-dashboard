@@ -98,7 +98,7 @@ limitations under the License.
     }
   
     load(messageCenter) {
-      return Promise.resolve();
+      return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
       //.then(() => console.log(captureExecutableOutput(filePath)))
       .then(() => console.log(loopReadDataFromFile(filePath, 1)))
