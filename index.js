@@ -17,7 +17,9 @@ limitations under the License.
 (() => {
   'use strict';
 
-  const WeatherCrudManager = require('./lib/crud-manager/crud-manager.js');
+  const TemperatureCrudManager = require('./lib/crud-manager/temperature-crud-manager.js');
+  const PressureCrudManager = require('./lib/crud-manager/pressure-crud-manager.js');
+  const WeightCrudManager = require('./lib/crud-manager/weight-crud-manager.js');
 
   var path       = require('path'),
       fs         = require('fs'),
@@ -27,14 +29,20 @@ limitations under the License.
       assert     = require('assert');
 
 
+
+
   class App {
 
     constructor() {
-      this._crudManager = new WeatherCrudManager();
-      this.filePath = path.join(__dirname, 'data.csv');
+      this._temperatureCrudManager = new TemperatureCrudManager();
+      this._pressureCrudManager = new PressureCrudManager();
+      this._weightCrudManager = new WeightCrudManager();
+
       this.temperatureTimeDelay = 5000;
       this.pressureTimeDelay = 1000;
       this.weightTimeDelay = 50000;
+
+      this.filePath = path.join(__dirname, 'data.csv');
     }
 
     changeTemperatureTimeDelay(newTemperatureTimeDelay) {
@@ -49,14 +57,41 @@ limitations under the License.
       this.weightTimeDelay = newWeightTimeDelay;
     }
 
-    loopReadDataFromFile() {
+    temperatureDriver() {
       var dt = new Date();  // Improve this section, creating new object on every entry
       var utcDate = dt.toUTCString();
-      console.log('Current time: ', utcDate);
+      console.log('Logging temperature reading. Current time: ', utcDate);
 
-      this._crudManager.storeTemperatureData(utcDate, '37F', '1C'); // Replace temporary data with real data
+      var fahrenheit = '15F';
+      var celsius = '-9C';
+      var jsonObj = {'timestamp': utcDate, 'fahrenheit': fahrenheit, 'celsius': celsius};
+      return jsonObj;
+    }
 
-      setTimeout(this.loopReadDataFromFile.bind(this), this.temperatureTimeDelay);
+    pressureDriver() {
+      var dt = new Date();  // Improve this section, creating new object on every entry
+      var utcDate = dt.toUTCString();
+      console.log('Logging pressure reading. Current time: ', utcDate);
+
+      var pressure = '12 psi'
+      var jsonObj = {'timestamp': utcDate, 'pressure': pressure};
+      return jsonObj;
+    }
+
+    weightDriver() {
+      var dt = new Date();  // Improve this section, creating new object on every entry
+      var utcDate = dt.toUTCString();
+      console.log('Logging weight reading. Current time: ', utcDate);
+
+      var weight = '50 lbs'
+      var jsonObj = {'timestamp': utcDate, 'pressure': weight};
+      return jsonObj;
+    }
+
+    loopReadDataFromFile(crudManager, driverFunction, timeDelay) {
+      var jsonObj = driverFunction()
+      crudManager.storeData(jsonObj); // Replace temporary data with real data
+      setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, driverFunction, timeDelay);
     }
 
     captureExecutableOutput(filePath) {
@@ -98,15 +133,21 @@ limitations under the License.
     }
 
     load(messageCenter) {
-      this._crudManager.load(messageCenter);
+      this._temperatureCrudManager.load(messageCenter);
+      this._pressureCrudManager.load(messageCenter);
+      this._weightCrudManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      .then(() => this.loopReadDataFromFile());
+      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this.temperatureDriver, this.temperatureTimeDelay))
+      .then(() => this.loopReadDataFromFile(this._pressureCrudManager, this.pressureDriver, this.pressureTimeDelay))
+      .then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay));
     }
 
     unload() {
       return Promise.resolve()
-      .then(() => console.log(this._crudManager.unload(messageCenter)));
+      .then(() => console.log(this._temperatureCrudManager.unload(messageCenter)))
+      .then(() => console.log(this._pressureCrudManager.unload(messageCenter)))
+      .then(() => console.log(this._weightCrudManager.unload(messageCenter)));
     }
   }
 
