@@ -33,6 +33,20 @@ limitations under the License.
       this._crudManager = new WeatherCrudManager();
       this.filePath = path.join(__dirname, 'data.csv');
       this.temperatureTimeDelay = 5000;
+      this.pressureTimeDelay = 1000;
+      this.weightTimeDelay = 50000;
+    }
+
+    changeTemperatureTimeDelay(newTemperatureTimeDelay) {
+      this.temperatureTimeDelay = newTemperatureTimeDelay;
+    }
+
+    changePressureTimeDelay(newPressureTimeDelay) {
+      this.pressureTimeDelay = newPressureTimeDelay;
+    }
+
+    changeWeightTimeDelay(newWeightTimeDelay) {
+      this.weightTimeDelay = newWeightTimeDelay;
     }
 
     loopReadDataFromFile() {
@@ -85,12 +99,8 @@ limitations under the License.
 
     load(messageCenter) {
       this._crudManager.load(messageCenter);
-      console.log('the crud manager should be loaded now');
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      //.then(() => console.log(captureExecutableOutput(filePath)))
-      //.then(() => this._crudManager.load(messageCenter))//,'1/2/2018','11:37','0'));
-      //.then(() => this._crudManager.pushTempData('dummy date', 'dummy time', 'return from above function'))
       .then(() => this.loopReadDataFromFile());
     }
 
