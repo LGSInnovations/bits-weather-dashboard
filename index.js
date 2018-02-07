@@ -64,6 +64,7 @@ limitations under the License.
       var utcDate = dt.toUTCString();
       console.log('Logging temperature reading. Current time: ', utcDate);
 
+      // TODO: Add call to temperature sensor here
       var fahrenheit = '15F';
       var celsius = '-9C';
       var jsonObj = {'timestamp': utcDate, 'fahrenheit': fahrenheit, 'celsius': celsius};
@@ -77,6 +78,7 @@ limitations under the License.
       var utcDate = dt.toUTCString();
       console.log('Logging pressure reading. Current time: ', utcDate);
 
+      // TODO: Add call to pressure sensor here
       var pressure = '12 psi'
       var jsonObj = {'timestamp': utcDate, 'pressure': pressure};
       return jsonObj;
@@ -89,6 +91,7 @@ limitations under the License.
       var utcDate = dt.toUTCString();
       console.log('Logging weight reading. Current time: ', utcDate);
 
+      // TODO: Add call to weight sensor here
       var weight = '50 lbs'
       var jsonObj = {'timestamp': utcDate, 'pressure': weight};
       return jsonObj;
