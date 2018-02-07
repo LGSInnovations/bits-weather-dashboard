@@ -57,6 +57,8 @@ limitations under the License.
       this.weightTimeDelay = newWeightTimeDelay;
     }
 
+    // Stub for temp driver
+    // Returns JSON object to store
     temperatureDriver() {
       var dt = new Date();  // Improve this section, creating new object on every entry
       var utcDate = dt.toUTCString();
@@ -68,6 +70,8 @@ limitations under the License.
       return jsonObj;
     }
 
+    // Stub for pressure driver
+    // Returns JSON object to store
     pressureDriver() {
       var dt = new Date();  // Improve this section, creating new object on every entry
       var utcDate = dt.toUTCString();
@@ -78,6 +82,8 @@ limitations under the License.
       return jsonObj;
     }
 
+    // Stub for weight driver
+    // Returns JSON object to store
     weightDriver() {
       var dt = new Date();  // Improve this section, creating new object on every entry
       var utcDate = dt.toUTCString();
@@ -88,6 +94,7 @@ limitations under the License.
       return jsonObj;
     }
 
+    // Generic looping function, used by each sensor
     loopReadDataFromFile(crudManager, driverFunction, timeDelay) {
       var jsonObj = driverFunction()
       crudManager.storeData(jsonObj); // Replace temporary data with real data
