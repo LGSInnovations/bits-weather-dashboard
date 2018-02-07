@@ -16,104 +16,87 @@ limitations under the License.
 
 (() => {
   'use strict';
-  
-  const CrudManager = require('./lib/crud-manager/crud-manager.js');
-  
+
+  const WeatherCrudManager = require('./lib/crud-manager/crud-manager.js');
+
   var path       = require('path'),
       fs         = require('fs'),
       exec       = require('child_process').exec,
       filePath   = path.join(__dirname, 'data.csv'),
       scriptName = path.join(__dirname, 'example_executable.py'),
       assert     = require('assert');
-      
-  var date = "date";
-  var time = "time";
-  var celsius = "celsius";
-
-   
-  // Issues with this call to Mongo - Collection name must be a string
-  /*
-  function callMongoAPI(messageCenter) {
-    setTimeout(callMongoAPI, 5000, messageCenter);
-    const data = {
-      'name': 'bob',
-      'password': 'other_data'
-    };
-    return messageCenter.sendRequest('mongodb#Collection insertOne', null, data)
-    .then(() => {
-      console.log('Mongo was called!')
-    });
-  }*/
-  
-
-  function captureExecutableOutput(filePath) {
-    return exec("python " + scriptName, 
-      function(error, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-    });
-  }
-
-  function readDataFromFile(filePath, callback) {
-    var content;
-    fs.readFile(filePath, function read(err, data) {
-      if (err) {
-        throw err;
-      }
-      content = data;
-      callback(data);
-    });
-  }
-
-  function interpretThermometerString(str) {
-      // assumed str format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
-      var split_str = String(str).trim().split(" ");
-      assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + str);
-
-      var date    = split_str[0];
-      var time    = split_str[1];
-      var celsius = split_str[4].slice(0, -1);
-
-      assert(date.length == 10, "Date is incorrectly formatted: " + date);
-      assert(time.length ==  8, "Time is incorrectly formatted: " + time);
-
-      console.log("date: "    + date);
-      console.log("time: "    + time);
-      console.log("celsius: " + celsius);
-
-      //return [date, time, celsius];
-  }
-
-  function loopReadDataFromFile(filePath, delayInSeconds) {
-    console.log("filepath: " + filePath);
-    console.log("delay: "    + delayInSeconds);
-    var data = readDataFromFile(filePath, interpretThermometerString);
-    //var thermometer_values = interpretThermometerString(data);
-
-    setTimeout(loopReadDataFromFile, 5000, filePath, delayInSeconds);
-    return true;
-  }
 
 
   class App {
-  
+
     constructor() {
-      this._crudManager = new CrudManager();
+      this._crudManager = new WeatherCrudManager();
+      this.filePath = path.join(__dirname, 'data.csv');
+      this.temperatureTimeDelay = 5000;
     }
-  
+
+    loopReadDataFromFile() {
+      var dt = new Date();  // Improve this section, creating new object on every entry
+      var utcDate = dt.toUTCString();
+      console.log('Current time: ', utcDate);
+
+      this._crudManager.storeTemperatureData(utcDate, '37F', '1C'); // Replace temporary data with real data
+
+      setTimeout(this.loopReadDataFromFile.bind(this), this.temperatureTimeDelay);
+    }
+
+    captureExecutableOutput(filePath) {
+      return exec("python " + scriptName,
+        function(error, stdout, stderr) {
+          console.log(stdout);
+          console.log(stderr);
+      });
+    }
+
+    readDataFromFile(callback) {
+      var content;
+      fs.readFile(self.filePath, function read(err, data) {
+        if (err) {
+          throw err;
+        }
+        content = data;
+        callback(data);
+      });
+    }
+
+    interpretThermometerString(str) {
+        // assumed str format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
+        var split_str = String(str).trim().split(" ");
+        assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + str);
+
+        var date        = split_str[0];
+        var time        = split_str[1];
+        var fahrenheit  = split_str[3].slice(0, -1);
+        var celsius     = split_str[4].slice(0, -1);
+
+        assert(date.length == 10, "Date is incorrectly formatted: " + date);
+        assert(time.length ==  8, "Time is incorrectly formatted: " + time);
+
+        console.log("date: "    + date);
+        console.log("time: "    + time);
+        console.log("celsius: " + celsius);
+        return [fahrenheit, celsius];
+    }
+
     load(messageCenter) {
+      this._crudManager.load(messageCenter);
+      console.log('the crud manager should be loaded now');
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
       //.then(() => console.log(captureExecutableOutput(filePath)))
-      .then(() => console.log(loopReadDataFromFile(filePath, 1)))
-      .then(() => this._crudManager.load(messageCenter,date,time,celsius));
-      //loopReadDataFromFile(filePath, 1);
-      //return true;
+      //.then(() => this._crudManager.load(messageCenter))//,'1/2/2018','11:37','0'));
+      //.then(() => this._crudManager.pushTempData('dummy date', 'dummy time', 'return from above function'))
+      .then(() => this.loopReadDataFromFile());
     }
 
     unload() {
       return Promise.resolve()
-      .then(() => this._crudManager.unload(messageCenter));
+      .then(() => console.log(this._crudManager.unload(messageCenter)));
     }
   }
 
