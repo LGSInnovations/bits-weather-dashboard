@@ -129,15 +129,6 @@ limitations under the License.
       setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, driverFunction, timeDelay);
     }
 
-    captureExecutableOutput(filePath, callback) {
-      exec("python " + filePath,
-        function(error, stdout, stderr) {
-          console.log(stdout);
-          console.log(stderr);
-          return callback(stdout);
-      });
-    }
-
     readDataFromFile(callback) {
       var content;
       fs.readFile(self.filePath, function read(err, data) {
@@ -145,7 +136,7 @@ limitations under the License.
           throw err;
         }
         content = data;
-        callback(data);
+        callback(data); // TODO: Replace this line with crudManager.storeData() when ported into driver
       });
     }
 
