@@ -67,6 +67,7 @@ limitations under the License.
       **/
       var temperatureSensorExecutable = 'example_executable.py';
 
+      // TODO: Add actual file path
       filePath = path.join(__dirname, temperatureSensorExecutable);
       exec("python " + filePath,
         function(error, stdout, stderr) {
