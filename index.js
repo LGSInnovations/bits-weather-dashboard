@@ -59,21 +59,48 @@ limitations under the License.
 
     // Stub for temp driver
     // Returns JSON object to store
-    temperatureDriver() {
-      var dt = new Date();  // Improve this section, creating new object on every entry
+    temperatureDriver(crudManager) {
+      /** UTC formatted datetime example
+      var dt = new Date();
       var utcDate = dt.toUTCString();
       console.log('Logging temperature reading. Current time: ', utcDate);
+      **/
+      var temperatureSensorExecutable = 'example_executable.py';
 
-      // TODO: Add call to temperature sensor here
-      var fahrenheit = '15F';
-      var celsius = '-9C';
-      var jsonObj = {'timestamp': utcDate, 'fahrenheit': fahrenheit, 'celsius': celsius};
-      return jsonObj;
+      filePath = path.join(__dirname, temperatureSensorExecutable);
+      exec("python " + filePath,
+        function(error, stdout, stderr) {
+          /** Use for debugging
+          console.log(stdout);
+          console.log(stderr);
+          **/
+
+          var split_str = String(stdout).trim().split(" ");
+          assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
+
+          var date        = split_str[0];
+          var time        = split_str[1];
+          //var fahrenheit  = split_str[3].slice(0, -1);
+          var celsius     = split_str[4].slice(0, -1);
+
+          assert(date.length == 10, "Date is incorrectly formatted: " + date);
+          assert(time.length ==  8, "Time is incorrectly formatted: " + time);
+
+          /** Use for debugging
+          console.log("date: "    + date);
+          console.log("time: "    + time);
+          console.log("celsius: " + celsius);
+          **/
+
+          var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
+          crudManager.storeData(jsonObj);
+          console.log('Logged temperature reading: ', jsonObj);
+      });
     }
 
     // Stub for pressure driver
     // Returns JSON object to store
-    pressureDriver() {
+    pressureDriver(crudManager) {
       var dt = new Date();  // Improve this section, creating new object on every entry
       var utcDate = dt.toUTCString();
       console.log('Logging pressure reading. Current time: ', utcDate);
@@ -81,12 +108,11 @@ limitations under the License.
       // TODO: Add call to pressure sensor here
       var pressure = '12 psi'
       var jsonObj = {'timestamp': utcDate, 'pressure': pressure};
-      return jsonObj;
     }
 
     // Stub for weight driver
     // Returns JSON object to store
-    weightDriver() {
+    weightDriver(crudManager) {
       var dt = new Date();  // Improve this section, creating new object on every entry
       var utcDate = dt.toUTCString();
       console.log('Logging weight reading. Current time: ', utcDate);
@@ -94,21 +120,20 @@ limitations under the License.
       // TODO: Add call to weight sensor here
       var weight = '50 lbs'
       var jsonObj = {'timestamp': utcDate, 'pressure': weight};
-      return jsonObj;
     }
 
     // Generic looping function, used by each sensor
     loopReadDataFromFile(crudManager, driverFunction, timeDelay) {
-      var jsonObj = driverFunction()
-      crudManager.storeData(jsonObj); // Replace temporary data with real data
+      driverFunction(crudManager);
       setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, driverFunction, timeDelay);
     }
 
-    captureExecutableOutput(filePath) {
-      return exec("python " + scriptName,
+    captureExecutableOutput(filePath, callback) {
+      exec("python " + filePath,
         function(error, stdout, stderr) {
           console.log(stdout);
           console.log(stderr);
+          return callback(stdout);
       });
     }
 
@@ -123,34 +148,15 @@ limitations under the License.
       });
     }
 
-    interpretThermometerString(str) {
-        // assumed str format: 'yyyy/mm/dd hh:mm:ss Temperature XX.XXF XX.XXC'
-        var split_str = String(str).trim().split(" ");
-        assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + str);
-
-        var date        = split_str[0];
-        var time        = split_str[1];
-        var fahrenheit  = split_str[3].slice(0, -1);
-        var celsius     = split_str[4].slice(0, -1);
-
-        assert(date.length == 10, "Date is incorrectly formatted: " + date);
-        assert(time.length ==  8, "Time is incorrectly formatted: " + time);
-
-        console.log("date: "    + date);
-        console.log("time: "    + time);
-        console.log("celsius: " + celsius);
-        return [fahrenheit, celsius];
-    }
-
     load(messageCenter) {
       this._temperatureCrudManager.load(messageCenter);
       this._pressureCrudManager.load(messageCenter);
       this._weightCrudManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this.temperatureDriver, this.temperatureTimeDelay))
-      .then(() => this.loopReadDataFromFile(this._pressureCrudManager, this.pressureDriver, this.pressureTimeDelay))
-      .then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay));
+      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this.temperatureDriver, this.temperatureTimeDelay));
+      //.then(() => this.loopReadDataFromFile(this._pressureCrudManager, this.pressureDriver, this.pressureTimeDelay))
+      //.then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay));
     }
 
     unload() {
