@@ -18,6 +18,7 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../base-layout/base-header-layout/base-header-layout.html">
 <link rel="import" href="../base-layout/base-single-grid-item-wrapper/base-single-grid-item-wrapper.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-data.html">
@@ -38,10 +39,10 @@
       <div class="content">
         <base-single-grid-item-wrapper>
         <paper-listbox>
-          <template is="dom-repeat" items="[[items]]">
-            <paper-item>Temp reading date: [[item.date]]</paper-item>
-            <paper-item>Temp reading time: [[item.time]]</paper-item>
-            <paper-item>Temp reading data: [[item.celsius]]</paper-item>
+          <template is="dom-repeat" items="{{items}}">
+            <paper-item>Temp reading date: {{items.date}}</paper-item>
+            <paper-item>Temp reading time: {{items.time}}</paper-item>
+            <paper-item>Temp reading data: {{items.celsius}}</paper-item>
           </template>
         </paper-listbox>
        </base-single-grid-item-wrapper>
