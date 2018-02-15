@@ -34,19 +34,15 @@
     </style>
 
     <weather-dashboard-data items="{{items}}"></weather-dashboard-data>
-      <div class="tabs">
-        <button>Overview</button>
-        <button>History</button>
-        <button>Graphs</button>
-      </div>
+        <div>
         <div class="content">
           <div width="33.33%">
             <base-single-grid-item-wrapper>
             <paper-listbox>
               <template is="dom-repeat" items="[[items]]">
                 <paper-item>Temp reading date: [[item.date]]</paper-item>
-                <paper-item>Temp reading time: [[item.time]]</paper-item>
-                <paper-item>Temp reading data: [[item.celsius]]</paper-item>
+                <paper-item align="center">Temp reading time: [[item.time]]</paper-item>
+                <paper-item align="right">Temp reading data: [[item.celsius]]</paper-item>
               </template>
             </paper-listbox>
            </base-single-grid-item-wrapper>
@@ -54,6 +50,7 @@
 
         <div class="content" width="33.33%">HEY COL 2</div>
         <div class="content" width="33.33%" align="right">HEY COL 2</div>
+        </div>
         </div>
      </base-header-layout>
   </template>
