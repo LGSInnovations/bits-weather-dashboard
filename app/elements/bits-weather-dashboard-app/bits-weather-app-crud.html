@@ -14,6 +14,7 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--<link rel="import" href="polymer-grid-layout.html">-->
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../base-layout/base-header-layout/base-header-layout.html">
@@ -24,41 +25,103 @@
 
 <dom-module id="weather-dashboard-app-crud">
   <template>
-    <style include="base-shared-styles">
+    <!--<style include="base-shared-styles">
       :host {
         display: block;
         position: relative;
         height: 100%;
       }
+    </style>-->
+    <style is="custom-style">
+      .container {
+          @apply(--layout-grid-justify-items-center);
+
+          grid-template-columns: 200px 200px 200px;
+      }
+      .container > div {
+          border: 1px solid rgba(0,95,107);
+          border-radius: 3px;
+          background-color: rgba(0, 95, 107, 0.8);
+          padding: 0.2em;
+          color: #fff;
+          margin-bottom: 10px;
+      }
+      .container > div:nth-child(odd) {
+          background-color: rgba(110, 195, 107, 0.8);
+      }
     </style>
 
     <weather-dashboard-data items="{{items}}"></weather-dashboard-data>
     
-    <base-header-layout x-title="Temperature" no-back>
+    <!--<base-header-layout x-title="Temperature" no-back> -->
+      <div class="container">
+        <div>{{date}}</div>
+        <div>2</div>
+        <div>{{celsius}}</div>
+      </div>
       <div class="content">
-        <base-single-grid-item-wrapper>
+        <!--<base-single-grid-item-wrapper> -->
         <paper-listbox>
-          <template is="dom-repeat" items="[[items]]">
+          <template is="dom-repeat" items="[[items]]" count="1">
             <paper-item>Temp reading date: [[item.date]]</paper-item>
             <paper-item>Temp reading time: [[item.time]]</paper-item>
             <paper-item>Temp reading data: [[item.celsius]]</paper-item>
           </template>
         </paper-listbox>
-       </base-single-grid-item-wrapper>
+        
+        <!--<paper-listbox>
+          <template is="dom-if" if="true" restamp="true" id="rend">
+            <paper-item>Temp reading date: [[item.date]]</paper-item>
+            <paper-item>Temp reading time: [[item.time]]</paper-item>
+            <paper-item>Temp reading data: [[item.celsius]]</paper-item>
+          </template>
+        </paper-listbox>-->
+        
+        <paper-listbox>
+          <template>
+            <div>{{item.date}}</div>
+          </template>
+        </paper-listbox>
+        
+        
+       <!--</base-single-grid-item-wrapper>-->
       </div>
-     </base-header-layout>
+     <!--</base-header-layout>-->
   </template>
   <script>
   (() => {
     'use strict';
-
+    
+    var PolymerUtils = {
+      template: {
+        restamp: function(template) {
+          template.if = false;
+          setTimeout(function() {
+            template.if = true;
+          });
+        },
+      }
+    };
+    
+    
     Polymer({
       is: 'weather-dashboard-app-crud',
       properties: {
         items: {
           type: Array
-        }
-      }
+        },
+        date: String,
+        time: String,
+        celsius: String  
+      },
+      
+      /*attached: function() {
+        var app = this;
+        setInterval(function() {
+          PolymerUtils.template.restamp(app.$.rend);
+        }, 5000);
+      
+      }*/
     });
   })();
   </script>
