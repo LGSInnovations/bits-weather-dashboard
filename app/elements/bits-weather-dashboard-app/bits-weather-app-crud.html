@@ -37,7 +37,7 @@
         <div class="content">
             <base-single-grid-item-wrapper>
             <paper-listbox>
-              <template items="[[items]]">
+              <template is="dom-repeat" items="[[items]]">
                 <!-- <paper-item>Temp reading date: [[item.date]]</paper-item> -->
                 <!-- <paper-item align="center">Temp reading time: [[item.time]]</paper-item> -->
                 <!-- <paper-item align="right">Temp reading data: [[item.celsius]]</paper-item> -->
@@ -48,7 +48,7 @@
             </paper-listbox>
            </base-single-grid-item-wrapper>
         <div class="content" width="33.33%">HEY COL 2</div>
-        <div class="content" width="33.33%" align="right">HEY COL 2</div>
+        <div class="content" width="33.33%" align="right">HEY COL 3</div>
         </div>
      </base-header-layout>
   </template>
