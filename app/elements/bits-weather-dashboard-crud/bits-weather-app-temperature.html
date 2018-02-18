@@ -21,9 +21,9 @@
 <link rel="import" href="../base-layout/base-single-grid-item-wrapper/base-single-grid-item-wrapper.html">
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
-<link rel="import" href="./weather-dashboard-data.html">
+<link rel="import" href="./weather-dashboard-tdata.html">
 
-<dom-module id="weather-dashboard-app-crud">
+<dom-module id="weather-dashboard-app-temperature">
   <template>
     <!--<style include="base-shared-styles">
       :host {
@@ -51,18 +51,18 @@
       }
     </style>
 
-    <weather-dashboard-data items="{{items}}"></weather-dashboard-data>
+    <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
     
-    <!--<base-header-layout x-title="Temperature" no-back> -->
+    <base-header-layout x-title="Temperature" no-back>
       <div class="container">
-        <div>{{date}}</div>
+        <div>1</div>
         <div>2</div>
-        <div>{{celsius}}</div>
+        <div>3</div>
       </div>
       <div class="content">
-        <!--<base-single-grid-item-wrapper> -->
+        <base-single-grid-item-wrapper>
         <paper-listbox>
-          <template is="dom-repeat" items="[[items]]" count="1">
+          <template is="dom-repeat" items="[[items]]">
             <paper-item>Temp reading date: [[item.date]]</paper-item>
             <paper-item>Temp reading time: [[item.time]]</paper-item>
             <paper-item>Temp reading data: [[item.celsius]]</paper-item>
@@ -75,18 +75,11 @@
             <paper-item>Temp reading time: [[item.time]]</paper-item>
             <paper-item>Temp reading data: [[item.celsius]]</paper-item>
           </template>
-        </paper-listbox>-->
+        </paper-listbox>-->        
         
-        <paper-listbox>
-          <template>
-            <div>{{item.date}}</div>
-          </template>
-        </paper-listbox>
-        
-        
-       <!--</base-single-grid-item-wrapper>-->
+       </base-single-grid-item-wrapper>
       </div>
-     <!--</base-header-layout>-->
+     </base-header-layout>
   </template>
   <script>
   (() => {
@@ -105,15 +98,12 @@
     
     
     Polymer({
-      is: 'weather-dashboard-app-crud',
+      is: 'weather-dashboard-app-temperature',
       properties: {
         items: {
           type: Array
-        },
-        date: String,
-        time: String,
-        celsius: String  
-      },
+        }
+      }
       
       /*attached: function() {
         var app = this;

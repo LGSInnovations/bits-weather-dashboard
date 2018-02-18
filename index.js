@@ -60,11 +60,6 @@ limitations under the License.
     // Stub for temp driver
     // Returns JSON object to store
     temperatureDriver(crudManager) {
-      /** UTC formatted datetime example
-      var dt = new Date();
-      var utcDate = dt.toUTCString();
-      console.log('Logging temperature reading. Current time: ', utcDate);
-      **/
       var temperatureSensorExecutable = 'example_executable.py';
 
       // TODO: Add actual file path
@@ -86,12 +81,6 @@ limitations under the License.
 
           assert(date.length == 10, "Date is incorrectly formatted: " + date);
           assert(time.length ==  8, "Time is incorrectly formatted: " + time);
-
-          /** Use for debugging
-          console.log("date: "    + date);
-          console.log("time: "    + time);
-          console.log("celsius: " + celsius);
-          **/
 
           var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
           crudManager.storeData(jsonObj);
