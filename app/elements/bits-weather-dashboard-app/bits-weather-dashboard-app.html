@@ -54,11 +54,23 @@
           type: Array,
           value: () => {
             return [{
-              name: 'crud',
-              element: 'weather-dashboard-app-crud',
-              import: '/elements/bits-weather-dashboard-app/bits-weather-app-crud.html',
-              displayName: 'Crud',
-              icon: 'icons:perm-device-information'
+              name: 'Temperature',
+              element: 'weather-dashboard-app-temperature',
+              import: '/elements/bits-weather-dashboard-crud/bits-weather-app-temperature.html',
+              displayName: 'Temperature Sensor Data',
+              icon: 'device:nfc'
+            },{
+              name: 'Pressure',
+              element: 'weather-dashboard-app-pressure',
+              import: '/elements/bits-weather-dashboard-crud/bits-weather-app-pressure.html',
+              displayName: 'Pressure Sensor Data',
+              icon: 'device:nfc'
+            },{
+              name: 'Weight',
+              element: 'weather-dashboard-app-weight',
+              import:'/elements/bits-weather-dashboard-crud/bits-weather-app-weight.html',
+              displayName:'Weight Sensor Data',
+              icon: 'device:nfc'
             }];
           }
         }

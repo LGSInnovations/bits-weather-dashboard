@@ -14,29 +14,60 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<!--<link rel="import" href="polymer-grid-layout.html">-->
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../base-layout/base-header-layout/base-header-layout.html">
 <link rel="import" href="../base-layout/base-single-grid-item-wrapper/base-single-grid-item-wrapper.html">
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
-<link rel="import" href="./weather-dashboard-data.html">
+<link rel="import" href="./weather-dashboard-tdata.html">
+<link rel="import" href="./ochart.html">
 
-<dom-module id="weather-dashboard-app-crud">
+<dom-module id="weather-dashboard-app-temperature">
   <template>
-    <style include="base-shared-styles">
+    <!--<style include="base-shared-styles">
       :host {
         display: block;
         position: relative;
         height: 100%;
       }
+    </style>-->
+    <style is="custom-style">
+      .container {
+          @apply(--layout-grid-justify-items-center);
+
+          grid-template-columns: 200px 200px 200px;
+      }
+      .container > div {
+          border: 1px solid rgba(0,95,107);
+          border-radius: 3px;
+          background-color: rgba(0, 95, 107, 0.8);
+          padding: 0.2em;
+          color: #fff;
+          margin-bottom: 10px;
+      }
+      .container > div:nth-child(odd) {
+          background-color: rgba(110, 195, 107, 0.8);
+      }
     </style>
 
-    <weather-dashboard-data items="{{items}}"></weather-dashboard-data>
+    <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
     
     <base-header-layout x-title="Temperature" no-back>
+      <div id="chartdiv"></div>
+      <div class="container">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+      </div>
+
       <div class="content">
         <base-single-grid-item-wrapper>
+        <template>
+          <div id="chartdiv"></div>
+        </template>
+        
         <paper-listbox>
           <template is="dom-repeat" items="[[items]]">
             <paper-item>Temp reading date: [[item.date]]</paper-item>
@@ -44,6 +75,15 @@
             <paper-item>Temp reading data: [[item.celsius]]</paper-item>
           </template>
         </paper-listbox>
+        
+        <!--<paper-listbox>
+          <template is="dom-if" if="true" restamp="true" id="rend">
+            <paper-item>Temp reading date: [[item.date]]</paper-item>
+            <paper-item>Temp reading time: [[item.time]]</paper-item>
+            <paper-item>Temp reading data: [[item.celsius]]</paper-item>
+          </template>
+        </paper-listbox>-->        
+        
        </base-single-grid-item-wrapper>
       </div>
      </base-header-layout>
@@ -51,14 +91,34 @@
   <script>
   (() => {
     'use strict';
-
+    
+    var PolymerUtils = {
+      template: {
+        restamp: function(template) {
+          template.if = false;
+          setTimeout(function() {
+            template.if = true;
+          });
+        },
+      }
+    };
+    
+    
     Polymer({
-      is: 'weather-dashboard-app-crud',
+      is: 'weather-dashboard-app-temperature',
       properties: {
         items: {
           type: Array
         }
       }
+      
+      /*attached: function() {
+        var app = this;
+        setInterval(function() {
+          PolymerUtils.template.restamp(app.$.rend);
+        }, 5000);
+      
+      }*/
     });
   })();
   </script>

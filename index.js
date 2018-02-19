@@ -60,16 +60,11 @@ limitations under the License.
     // Stub for temp driver
     // Returns JSON object to store
     temperatureDriver(crudManager) {
-      /** UTC formatted datetime example
-      var dt = new Date();
-      var utcDate = dt.toUTCString();
-      console.log('Logging temperature reading. Current time: ', utcDate);
-      **/
-      var temperatureSensorExecutable = 'example_executable.py';
+      var temperatureSensorExecutable = './pcsensor';
 
       // TODO: Add actual file path
-      filePath = path.join(__dirname, temperatureSensorExecutable);
-      exec("python " + filePath,
+      filePath = '/../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
+      exec('.' + filePath,
         function(error, stdout, stderr) {
           /** Use for debugging
           console.log(stdout);
@@ -77,6 +72,10 @@ limitations under the License.
           **/
 
           var split_str = String(stdout).trim().split(" ");
+          console.log("PATAAAATH",filePath);
+          console.log("STOUUUUT",stdout);
+          console.log("stdeerrr",stderr);
+          console.log("STUUUFF",split_str);
           assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
 
           var date        = split_str[0];
@@ -86,12 +85,6 @@ limitations under the License.
 
           assert(date.length == 10, "Date is incorrectly formatted: " + date);
           assert(time.length ==  8, "Time is incorrectly formatted: " + time);
-
-          /** Use for debugging
-          console.log("date: "    + date);
-          console.log("time: "    + time);
-          console.log("celsius: " + celsius);
-          **/
 
           var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
           crudManager.storeData(jsonObj);
