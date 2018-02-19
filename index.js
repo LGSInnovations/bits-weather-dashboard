@@ -60,9 +60,8 @@ limitations under the License.
     // Stub for temp driver
     // Returns JSON object to store
     temperatureDriver(crudManager) {
-      var temperatureSensorExecutable = './pcsensor';
-
-      // TODO: Add actual file path
+      // Requires compiled executable of temperature sensor code
+      // TODO: Add documentation describing binary compilation process or push binary to master
       filePath = '/../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
       exec('.' + filePath,
         function(error, stdout, stderr) {
@@ -72,10 +71,6 @@ limitations under the License.
           **/
 
           var split_str = String(stdout).trim().split(" ");
-          console.log("PATAAAATH",filePath);
-          console.log("STOUUUUT",stdout);
-          console.log("stdeerrr",stderr);
-          console.log("STUUUFF",split_str);
           assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
 
           var date        = split_str[0];
