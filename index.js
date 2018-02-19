@@ -65,25 +65,30 @@ limitations under the License.
       filePath = '/../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
       exec('.' + filePath,
         function(error, stdout, stderr) {
-          /** Use for debugging
-          console.log(stdout);
-          console.log(stderr);
-          **/
-
-          var split_str = String(stdout).trim().split(" ");
-          assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
-
-          var date        = split_str[0];
-          var time        = split_str[1];
-          //var fahrenheit  = split_str[3].slice(0, -1);
-          var celsius     = split_str[4].slice(0, -1);
-
-          assert(date.length == 10, "Date is incorrectly formatted: " + date);
-          assert(time.length ==  8, "Time is incorrectly formatted: " + time);
-
-          var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
-          crudManager.storeData(jsonObj);
-          console.log('Logged temperature reading: ', jsonObj);
+          /*Use for debugging
+          console.log("stdout=",stdout);
+          console.log("stderr=",stderr);
+          console.log("error=",error);*/
+          if(!error) {
+              var split_str = String(stdout).trim().split(" ");
+              //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
+              var date        = split_str[0];
+              var time        = split_str[1];
+              //var fahrenheit  = split_str[3].slice(0, -1);
+              var celsius     = split_str[4].slice(0, -1);
+              //assert(date.length == 10, "Date is incorrectly formatted: " + date);
+              //assert(time.length ==  8, "Time is incorrectly formatted: " + time);
+              var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
+              crudManager.storeData(jsonObj);
+              console.log('Logging temperature reading: ', jsonObj);
+          } else {
+              var fdate = '2014/10/30'
+              var ftime = '07:00:36'
+              var fcelsius = '23.31'
+              var data = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
+              crudManager.storeData(data);
+              console.log('Logging fake reading: ', data);
+          }
       });
     }
 
