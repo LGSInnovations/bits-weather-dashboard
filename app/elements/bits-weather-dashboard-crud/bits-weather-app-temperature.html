@@ -22,6 +22,7 @@
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-tdata.html">
+<link rel="import" href="./ochart.html">
 
 <dom-module id="weather-dashboard-app-temperature">
   <template>
@@ -54,13 +55,19 @@
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
     
     <base-header-layout x-title="Temperature" no-back>
+      <div id="chartdiv"></div>
       <div class="container">
         <div>1</div>
         <div>2</div>
         <div>3</div>
       </div>
+
       <div class="content">
         <base-single-grid-item-wrapper>
+        <template>
+          <div id="chartdiv"></div>
+        </template>
+        
         <paper-listbox>
           <template is="dom-repeat" items="[[items]]">
             <paper-item>Temp reading date: [[item.date]]</paper-item>
