@@ -34,33 +34,81 @@
       .column {
         float: left;
         width: 33.33%;
+        padding: 40px 20px 0px 20px;
+      }
+      .heading {
+        font-size: 30px;
+      }
+      .reading {
+        font-size: 80px;
       }
     </style>
 
     <weather-dashboard-data items="{{items}}"></weather-dashboard-data>
-            <base-single-grid-item-wrapper>
-                <button>Sensor Overview</button>
-                <button>Graphs</button>
-                <button>History</button>
-                <button>More Information</button>
-                <div class="row">
-                    <div class="column">
-                        <base-single-grid-item-wrapper>
-                            Temperature
-                        </base-single-grid-item-wrapper>
-                    </div>
-                    <div class="column">
-                        <base-single-grid-item-wrapper>
-                            Air Pressure
-                        </base-single-grid-item-wrapper>
-                    </div>
-                    <div class="column">
-                        <base-single-grid-item-wrapper>
-                            Snow Depth
-                        </base-single-grid-item-wrapper>
-                    </div>
-                </div>
-           </base-single-grid-item-wrapper>
+        <button>Sensor Overview</button>
+        <button>Graphs</button>
+        <button>History</button>
+        <button>More Information</button>
+        <div class="row">
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Temperature </div>
+                    <div class="reading">54 F</div>
+                </base-single-grid-item-wrapper>
+            </div>
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Air Pressure</div>
+                    <div class="reading">22 psi</div>
+                </base-single-grid-item-wrapper>
+            </div>
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Snow Depth</div>
+                    <div class="reading">2 in</div>
+                </base-single-grid-item-wrapper>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Temperature</div>
+                    <div class="reading">32 F</div>
+                </base-single-grid-item-wrapper>
+            </div>
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Air Pressure</div>
+                    <div class="reading">22.3 psi</div>
+                </base-single-grid-item-wrapper>
+            </div>
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Snow Depth</div>
+                    <div class="reading">7 in</div>
+                </base-single-grid-item-wrapper>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Temperature</div>
+                    <div class="reading">16 F</div>
+                </base-single-grid-item-wrapper>
+            </div>
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Air Pressure</div>
+                    <div class="reading">20 psi</div>
+                </base-single-grid-item-wrapper>
+            </div>
+            <div class="column">
+                <base-single-grid-item-wrapper>
+                    <div class="heading">Snow Depth</div>
+                    <div class="reading">10 in</div>
+                </base-single-grid-item-wrapper>
+            </div>
+        </div>
      </base-header-layout>
   </template>
   <script>
