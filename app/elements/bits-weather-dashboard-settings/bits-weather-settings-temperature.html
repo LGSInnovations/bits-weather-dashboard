@@ -24,7 +24,7 @@
 <link rel="import" href="./weather-dashboard-tdata.html">
 <link rel="import" href="./ochart.html">
 
-<dom-module id="weather-dashboard-app-temperature">
+<dom-module id="weather-dashboard-settings-temperature">
   <template>
     <!--<style include="base-shared-styles">
       :host {
@@ -53,14 +53,11 @@
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
+    <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
+    <paper-input label="Current Temp (s)" type="number" value="{{reading}}"></paper-input>
     
     <base-header-layout x-title="Temperature" no-back>
-      <div id="chartdiv"></div>
-      <div class="container">
-        <div>1</div>
-        <div>2</div>
-        <div>[[celsius]]</div>
-      </div>
+    
 
       <div class="content">
         <base-single-grid-item-wrapper>
@@ -107,7 +104,7 @@
     
     
     Polymer({
-      is: 'weather-dashboard-app-temperature',
+      is: 'weather-dashboard-settings-temperature',
       properties: {
         items: {
           type: Array

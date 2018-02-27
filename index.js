@@ -20,6 +20,8 @@ limitations under the License.
   const TemperatureCrudManager = require('./lib/crud-manager/temperature-crud-manager.js');
   const PressureCrudManager = require('./lib/crud-manager/pressure-crud-manager.js');
   const WeightCrudManager = require('./lib/crud-manager/weight-crud-manager.js');
+  
+  const TemperatureSettingsManager = require('./lib/settings-manager/ts-manager.js');
 
   var path       = require('path'),
       fs         = require('fs'),
@@ -37,6 +39,8 @@ limitations under the License.
       this._temperatureCrudManager = new TemperatureCrudManager();
       this._pressureCrudManager = new PressureCrudManager();
       this._weightCrudManager = new WeightCrudManager();
+      
+      this._temperatureSettingsManager = new TemperatureSManager();
 
       this.temperatureTimeDelay = 5000;
       this.pressureTimeDelay = 1000;
@@ -59,7 +63,7 @@ limitations under the License.
 
     // Stub for temp driver
     // Returns JSON object to store
-    temperatureDriver(crudManager) {
+    temperatureDriver(crudManager,settingsManager) {
       var temperatureSensorExecutable = './pcsensor';
 
       // TODO: Add actual file path
@@ -70,25 +74,36 @@ limitations under the License.
           console.log(stdout);
           console.log(stderr);
           **/
+          if(!error){
+            var split_str = String(stdout).trim().split(" ");
+            console.log("PATAAAATH",filePath);
+            console.log("STOUUUUT",stdout);
+            console.log("stdeerrr",stderr);
+            console.log("STUUUFF",split_str);
+            //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
 
-          var split_str = String(stdout).trim().split(" ");
-          console.log("PATAAAATH",filePath);
-          console.log("STOUUUUT",stdout);
-          console.log("stdeerrr",stderr);
-          console.log("STUUUFF",split_str);
-          assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
+            var date        = split_str[0];
+            var time        = split_str[1];
+            //var fahrenheit  = split_str[3].slice(0, -1);
+            var celsius     = split_str[4].slice(0, -1);
 
-          var date        = split_str[0];
-          var time        = split_str[1];
-          //var fahrenheit  = split_str[3].slice(0, -1);
-          var celsius     = split_str[4].slice(0, -1);
+            //assert(date.length == 10, "Date is incorrectly formatted: " + date);
+            //assert(time.length ==  8, "Time is incorrectly formatted: " + time);
 
-          assert(date.length == 10, "Date is incorrectly formatted: " + date);
-          assert(time.length ==  8, "Time is incorrectly formatted: " + time);
-
-          var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
-          crudManager.storeData(jsonObj);
-          console.log('Logged temperature reading: ', jsonObj);
+            var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
+            crudManager.storeData(jsonObj);
+            settingsManager.setTempReading(celsius);
+            console.log('Logged temperature reading: ', jsonObj);
+          } else {
+            var fdate = '2014/10/30';
+            var ftime = '07:00:36';
+            var fcelsius = '23.31'; 
+            var data = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
+            crudManager.storeData(data);
+            settingsManager.setTempReading(celsius);
+            console.log("Logging fake reading:",data);
+            
+          }
       });
     }
 
@@ -117,9 +132,9 @@ limitations under the License.
     }
 
     // Generic looping function, used by each sensor
-    loopReadDataFromFile(crudManager, driverFunction, timeDelay) {
-      driverFunction(crudManager);
-      setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, driverFunction, timeDelay);
+    loopReadDataFromFile(crudManager, settingsManager, driverFunction, timeDelay) {
+      driverFunction(crudManager,settingsManager);
+      setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, settingsManager, driverFunction, timeDelay);
     }
 
     readDataFromFile(callback) {
@@ -139,7 +154,7 @@ limitations under the License.
       this._weightCrudManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this.temperatureDriver, this.temperatureTimeDelay));
+      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this._temperatureSettingsManager, this.temperatureDriver, this.temperatureTimeDelay));
       //.then(() => this.loopReadDataFromFile(this._pressureCrudManager, this.pressureDriver, this.pressureTimeDelay))
       //.then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay));
     }
