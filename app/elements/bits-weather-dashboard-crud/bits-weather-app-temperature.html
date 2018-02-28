@@ -50,48 +50,33 @@
       .container > div:nth-child(odd) {
           background-color: rgba(110, 195, 107, 0.8);
       }
+      .column {
+          float: left;
+          width: 45.00%;
+          padding: 40px 20px 0px 20px;
+      }
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
-    
-    <base-header-layout x-title="Temperature" no-back>
-      <div id="chartdiv"></div>
-      <div class="container">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-      </div>
 
-      <div class="content">
-        <base-single-grid-item-wrapper>
-        <template>
-          <div id="chartdiv"></div>
-        </template>
-        
-        <paper-listbox>
-          <template is="dom-repeat" items="[[items]]">
-            <paper-item>Temp reading date: [[item.date]]</paper-item>
-            <paper-item>Temp reading time: [[item.time]]</paper-item>
-            <paper-item>Temp reading data: [[item.celsius]]</paper-item>
-          </template>
-        </paper-listbox>
-        
-        <!--<paper-listbox>
-          <template is="dom-if" if="true" restamp="true" id="rend">
-            <paper-item>Temp reading date: [[item.date]]</paper-item>
-            <paper-item>Temp reading time: [[item.time]]</paper-item>
-            <paper-item>Temp reading data: [[item.celsius]]</paper-item>
-          </template>
-        </paper-listbox>-->        
-        
-       </base-single-grid-item-wrapper>
+    <base-header-layout x-title="Temperature" no-back>
+      <div class="row">
+        <div class="column">
+          <base-single-grid-item-wrapper>
+            <div class="row">Current</div>
+          </base-single-grid-item-wrapper>
+          <base-single-grid-item-wrapper>
+            <div class="row">Graph</div>
+          </base-single-grid-item-wrapper>
+        </div>
+        <div class="column">History</div>
       </div>
      </base-header-layout>
   </template>
   <script>
   (() => {
     'use strict';
-    
+
     var PolymerUtils = {
       template: {
         restamp: function(template) {
@@ -102,8 +87,8 @@
         },
       }
     };
-    
-    
+
+
     Polymer({
       is: 'weather-dashboard-app-temperature',
       properties: {
@@ -111,13 +96,13 @@
           type: Array
         }
       }
-      
+
       /*attached: function() {
         var app = this;
         setInterval(function() {
           PolymerUtils.template.restamp(app.$.rend);
         }, 5000);
-      
+
       }*/
     });
   })();
