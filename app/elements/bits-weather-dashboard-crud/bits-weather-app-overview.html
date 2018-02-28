@@ -47,7 +47,11 @@
           margin-bottom: 10px;
       }
       .container > div:nth-child(odd) {
-          background-color: rgba(110, 195, 107, 0.8);
+          background-color: rgba(192,192,192, 0.8);
+      }
+      div
+      {
+        align-content: center;
       }
       base-header-layout
       {
@@ -60,23 +64,42 @@
           padding: 40px 20px 0px 20px;
       }
       .heading {
-          font-size: 40px;
+          width: 50%;
+          margin: 0 auto;
+          font-size: 20px;
+          border-color: black;
+          border-radius: 5px;
       }
       .reading {
-          font-size: 100px;
+          width: 50%;
+          margin: 0 auto;
+          font-size: 35px;
+          border-color: black;
+          border-radius: 5px;
+      }
+      .silver {
+        width: 50%; margin: 0 auto;
+        background-color: rgba(192,192,192, 0.8);
+      }
+
+      #section
+      {
+        text
+        height: 100px;
+        width: 250px;
       }
     </style>
       <base-header-layout x-title="Overview"  no-back>
       <div class="container">
-        <div class="heading">Temperature is:
+        <div class="heading" id="section">Temperature is:
           <div class="reading">52F
           </div>
         </div>
-        <div class="heading">Avg snowfall is:
-          <div class="reading">6in
+        <div class="heading" id="section">Avg snowfall is:
+          <div class="reading">6.4in
           </div></div>
-        <div class="heading">Pressure is:
-            <div class="reading">15PSI
+        <div class="silver" id="section">Pressure is:
+            <div class="reading">15.2PSI
             </div>
       </div>
       <div class="content">
