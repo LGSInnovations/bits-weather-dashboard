@@ -50,41 +50,55 @@
       .container > div:nth-child(odd) {
           background-color: rgba(110, 195, 107, 0.8);
       }
+      .column {
+          float: left;
+          width: 45.00%;
+          padding: 40px 20px 0px 20px;
+      }
+      .heading {
+          font-size: 30px;
+      }
+      .reading {
+          font-size: 80px;
+      }
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
 
     <base-header-layout x-title="Temperature" no-back>
-      <div id="chartdiv"></div>
-      <div class="container">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-      </div>
-
-      <div class="content">
-        <base-single-grid-item-wrapper>
-        <template>
-          <div id="chartdiv"></div>
-        </template>
-
-        <paper-listbox>
-          <template is="dom-repeat" items="[[items]]">
-            <paper-item>Temp reading date: [[item.date]]</paper-item>
-            <paper-item>Temp reading time: [[item.time]]</paper-item>
-            <paper-item>Temp reading data: [[item.celsius]]</paper-item>
-          </template>
-        </paper-listbox>
-
-        <!--<paper-listbox>
-          <template is="dom-if" if="true" restamp="true" id="rend">
-            <paper-item>Temp reading date: [[item.date]]</paper-item>
-            <paper-item>Temp reading time: [[item.time]]</paper-item>
-            <paper-item>Temp reading data: [[item.celsius]]</paper-item>
-          </template>
-        </paper-listbox>-->
-
-       </base-single-grid-item-wrapper>
+      <div class="row">
+        <div class="column">
+          <base-single-grid-item-wrapper>
+            <div class="row">
+              <div class="heading">Current Temperature</div>
+              <div class="reading">25 F</div>
+            </div>
+          </base-single-grid-item-wrapper>
+          <base-single-grid-item-wrapper>
+            <div class="row">
+              <div class="heading">Graph</div>
+            </div>
+          </base-single-grid-item-wrapper>
+        </div>
+        <div class="column">
+          <base-single-grid-item-wrapper>
+            <div class="row">
+              <div class="heading">History</div>
+                <div class="content">
+                  <template>
+                    <div id="chartdiv"></div>
+                  </template>
+                  <paper-listbox>
+                    <template is="dom-repeat" items="[[items]]">
+                      <paper-item>Temp reading date: [[item.date]]</paper-item>
+                      <paper-item>Temp reading time: [[item.time]]</paper-item>
+                      <paper-item>Temp reading data: [[item.celsius]]</paper-item>
+                    </template>
+                  </paper-listbox>
+                </div>
+            </div>
+          </base-single-grid-item-wrapper>
+        </div>
       </div>
      </base-header-layout>
   </template>
