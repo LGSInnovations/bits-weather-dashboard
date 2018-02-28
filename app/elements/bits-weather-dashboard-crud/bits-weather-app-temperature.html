@@ -55,6 +55,12 @@
           width: 45.00%;
           padding: 40px 20px 0px 20px;
       }
+      .heading {
+          font-size: 30px;
+      }
+      .reading {
+          font-size: 80px;
+      }
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
@@ -63,13 +69,24 @@
       <div class="row">
         <div class="column">
           <base-single-grid-item-wrapper>
-            <div class="row">Current</div>
+            <div class="row">
+              <div class="heading">Current Temperature</div>
+              <div class="reading">25 F</div>
+            </div>
           </base-single-grid-item-wrapper>
           <base-single-grid-item-wrapper>
-            <div class="row">Graph</div>
+            <div class="row">
+              <div class="heading">Graph</div>
+            </div>
           </base-single-grid-item-wrapper>
         </div>
-        <div class="column">History</div>
+        <div class="column">
+          <base-single-grid-item-wrapper>
+            <div class="row">
+              <div class="heading">History</div>
+            </div>
+          </base-single-grid-item-wrapper>
+        </div>
       </div>
      </base-header-layout>
   </template>
