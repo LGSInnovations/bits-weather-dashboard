@@ -14,7 +14,7 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="polymer-grid-layout.html">
+<!-- <link rel="import" href="polymer-grid-layout.html"> -->
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../base-layout/base-header-layout/base-header-layout.html">
@@ -49,48 +49,70 @@
       .container > div:nth-child(odd) {
           background-color: rgba(110, 195, 107, 0.8);
       }
+      base-header-layout
+      {
+        align-content: center;
+        text-align: center;
+      }
+      .column {
+          float: left;
+          width: 45.00%;
+          padding: 40px 20px 0px 20px;
+      }
+      .heading {
+          font-size: 40px;
+      }
+      .reading {
+          font-size: 100px;
+      }
     </style>
-    <weather-dashboard-app-overview></weather-dashboard-app-overview>
-
-      <base-header-layout x-title="Overview" no-back>
+      <base-header-layout x-title="Overview"  no-back>
       <div class="container">
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
+        <div class="heading">Temperature is:
+          <div class="reading">52F
+          </div>
+        </div>
+        <div class="heading">Avg snowfall is:
+          <div class="reading">6in
+          </div></div>
+        <div class="heading">Pressure is:
+            <div class="reading">15PSI
+            </div>
       </div>
       <div class="content">
-        <!--<base-single-grid-item-wrapper> -->
-        <!-- <paper-listbox>
-          <template is="dom-repeat" items="[[items]]">
-            <paper-item>Pressure reading date: [[item.utcDate]]</paper-item>
-            <paper-item>Pressure reading time: [[item.pressure]]</paper-item>
-          </template>
-        </paper-listbox>
-
-
-        <paper-listbox>
-          <template>
-            <div>{{item.utcDate}}</div>
-          </template>
-        </paper-listbox>
-         -->
-
-       <!--</base-single-grid-item-wrapper>-->
-      <!-- </div> -->
      </base-header-layout>
+     <!--Saving some work with fetching individual elements for when we implement findMostRecent
+     <weather-dashboard-tdata titems="{{items}}"></weather-dashboard-tdata>
+     <weather-dashboard-pdata pitems="{{items}}"></weather-dashboard-pdata>
+     <weather-dashboard-wdata witems="{{items}}"></weather-dashboard-wdata> -->
   </template>
   <script>
   (() => {
     'use strict';
-
+    var PolymerUtils = {
+      template: {
+        restamp: function(template) {
+          template.if = false;
+          setTimeout(function() {
+            template.if = true;
+          });
+        },
+      }
+    };
     Polymer({
       is: 'weather-dashboard-app-overview',
       behaviors: [Polymer.IronResizableBehavior],
-      // properties: {
-      //   items: {
-      //     type: Array
-      //   }
-      // }
+      properties: {
+        titems: {
+          type: Array
+        },
+        pitems: {
+          type: Array
+        },
+        witems: {
+          type: Array
+        }
+      }
     });
   })();
   </script>
