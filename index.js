@@ -40,7 +40,7 @@ limitations under the License.
       this._pressureCrudManager = new PressureCrudManager();
       this._weightCrudManager = new WeightCrudManager();
       
-      this._temperatureSettingsManager = new TemperatureSManager();
+      this._temperatureSettingsManager = new TemperatureSettingsManager();
 
       this.temperatureTimeDelay = 5000;
       this.pressureTimeDelay = 1000;

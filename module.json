@@ -13,7 +13,8 @@
     "version": "",
     "dependencies": {
         "bits-base": "^2.0.0",
-        "mongodb": "^1.0.0"
+        "mongodb": "^1.0.0",
+        "settings": "^1.0.0"
     },
     "icon": "icons:swap-vert"
 }
