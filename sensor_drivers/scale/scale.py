@@ -2,6 +2,7 @@
 import time
 import usb.core
 import usb.util
+import datetime
 from sys import exit
 
 # DYMO 100 lbs
@@ -77,7 +78,7 @@ def listen():
             print("Data is not in lbs")
             exit()
         
-        print("date:%d reading:%.1f lbs" % (time.time(), raw_weight))
+        print("%s %.1f lbs" % (datetime.date.today().strftime("%Y/%m/%d %H:%M:%S"), raw_weight))
     else:
         print("Error grabbing data")
 

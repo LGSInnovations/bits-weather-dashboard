@@ -41,9 +41,10 @@ limitations under the License.
       // Time in milliseconds
       this.temperatureTimeDelay = 5000;
       this.pressureTimeDelay = 1000;
-      this.weightTimeDelay = 50000;
+      this.weightTimeDelay = 5000;
 
       this.temperatureRedundantFile = path.join(__dirname, 'backups/__temperatureRecords.csv');
+      this.weightRedundantFile = path.join(__dirname, 'backups/__weightRecords.csv');
 
       this.filePath = path.join(__dirname, 'data.csv');
     }
@@ -67,13 +68,13 @@ limitations under the License.
       // TODO: Add documentation describing binary compilation process or push binary to master
 
       // TODO: Pull out this filepath into class variables or pass as argument
-      filePath = '/../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
+      filePath = '../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
       exec('.' + filePath,
         function(error, stdout, stderr) {
-          /*Use for debugging
-          console.log("stdout=",stdout);
-          console.log("stderr=",stderr);
-          console.log("error=",error);*/
+          //Use for debugging
+          //console.log("stdout=",stdout);
+          //console.log("stderr=",stderr);
+          //console.log("error=",error);
           if(!error) {
               var split_str = String(stdout).trim().split(" ");
               //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
@@ -120,17 +121,55 @@ limitations under the License.
       var jsonObj = {'timestamp': utcDate, 'pressure': pressure};
     }
 
-    // Stub for weight driver
-    // Returns JSON object to store
-    weightDriver(crudManager) {
-      var dt = new Date();  // Improve this section, creating new object on every entry
-      var utcDate = dt.toUTCString();
-      console.log('Logging weight reading. Current time: ', utcDate);
 
-      // TODO: Add call to weight sensor here
-      var weight = '50 lbs'
-      var jsonObj = {'timestamp': utcDate, 'pressure': weight};
+
+    // Stub for temp driver
+    // Returns JSON object to store
+    weightDriver(crudManager, redundantFile) {
+      // Requires compiled executable of temperature sensor code
+      // TODO: Add documentation describing binary compilation process or push binary to master
+
+      // TODO: Pull out this filepath into class variables or pass as argument
+      filePath = '../bits-weather-dashboard/sensor_drivers/scale/scale.py';
+      exec('python3 ' + filePath,
+        function(error, stdout, stderr) {
+          //Use for debugging
+          //console.log("stdout=",stdout);
+          //console.log("stderr=",stderr);
+          //console.log("error=",error);
+          if(!error) {
+              var split_str = String(stdout).trim().split(" ");
+              //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
+              var date        = split_str[0];
+              var time        = split_str[1];
+              var weight     = split_str[2];
+              var jsonObj = {'date': date, 'time': time, 'weight': weight};
+              crudManager.storeData(jsonObj); // TODO: Add error handling on fail
+
+              fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
+                if (err) throw err;
+                //console.log('Temperature reading backed up: ', jsonObj);
+              });
+              console.log('Weight sensor recorded: ', jsonObj);
+          } else {
+              var fdate = '2014/10/30'
+              var ftime = '07:00:36'
+              var fweight = '0.00'
+              var data = {'date': fdate, 'time': ftime, 'weight': fweight};
+
+              crudManager.storeData(data); // TODO: Add error handling on fail
+
+              fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
+                if (err) throw err;
+                //console.log('Fake temperature reading backed up: ', data);
+              });
+              console.log('FAKE: Weight sensor recorded: ', data);
+          }
+      });
     }
+
+
+
 
     // Generic looping function, used by each sensor
     loopReadDataFromFile(crudManager, driverFunction, timeDelay, redundantFile) {
@@ -155,9 +194,9 @@ limitations under the License.
       this._weightCrudManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this.temperatureDriver, this.temperatureTimeDelay, this.temperatureRedundantFile));
+      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this.temperatureDriver, this.temperatureTimeDelay, this.temperatureRedundantFile))
       //.then(() => this.loopReadDataFromFile(this._pressureCrudManager, this.pressureDriver, this.pressureTimeDelay))
-      //.then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay));
+      .then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay, this.weightRedundantFile));
     }
 
     unload() {
