@@ -15,7 +15,7 @@ System of fog nodes to display real time temperature, humidity, and barometer se
 
 ### Dependencies
 In addition to dependencies of BITS, user also must have
-MongoDB bits module
+\nMongoDB bits module
 bits-weather-dashboard
 amCharts
 
