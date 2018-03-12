@@ -17,6 +17,7 @@
 <!--<link rel="import" href="polymer-grid-layout.html">-->
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../base-layout/base-header-layout/base-header-layout.html">
 <link rel="import" href="../base-layout/base-single-grid-item-wrapper/base-single-grid-item-wrapper.html">
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
@@ -62,11 +63,12 @@
       <div class="content">
         <base-single-grid-item-wrapper>
         <template>
-          <div id="chartdiv"></div>
+          <paper-input label="Current Temp (s)" type="number" value="{{reading}}"></paper-input>
         </template>
         
         <paper-listbox>
           <template is="dom-repeat" items="[[items]]">
+      
             <paper-item>Temp reading date: [[item.date]]</paper-item>
             <paper-item>Temp reading time: [[item.time]]</paper-item>
             <paper-item>Temp reading data: [[item.celsius]]</paper-item>

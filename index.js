@@ -21,7 +21,7 @@ limitations under the License.
   const PressureCrudManager = require('./lib/crud-manager/pressure-crud-manager.js');
   const WeightCrudManager = require('./lib/crud-manager/weight-crud-manager.js');
   
-  const TemperatureSettingsManager = require('./lib/settings-manager/ts-manager.js');
+  const TemperatureSettingsManager = require('./lib/settings-manager/temperature-settings-manager.js');
 
   var path       = require('path'),
       fs         = require('fs'),
@@ -100,8 +100,10 @@ limitations under the License.
             var fcelsius = '23.31'; 
             var data = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
             crudManager.storeData(data);
-            settingsManager.setTempReading(celsius);
+            settingsManager.setTempReading(fcelsius);
+            //var val = settingsManager.getTempReading();
             console.log("Logging fake reading:",data);
+            //console.log("get valu: ",val);
             
           }
       });
@@ -152,6 +154,7 @@ limitations under the License.
       this._temperatureCrudManager.load(messageCenter);
       this._pressureCrudManager.load(messageCenter);
       this._weightCrudManager.load(messageCenter);
+      this._temperatureSettingsManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
       .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this._temperatureSettingsManager, this.temperatureDriver, this.temperatureTimeDelay));
@@ -163,7 +166,8 @@ limitations under the License.
       return Promise.resolve()
       .then(() => console.log(this._temperatureCrudManager.unload(messageCenter)))
       .then(() => console.log(this._pressureCrudManager.unload(messageCenter)))
-      .then(() => console.log(this._weightCrudManager.unload(messageCenter)));
+      .then(() => console.log(this._weightCrudManager.unload(messageCenter)))
+      .then(() => console.log(this._temperatureSettingsManager.unload(messageCenter)));
     }
   }
 
