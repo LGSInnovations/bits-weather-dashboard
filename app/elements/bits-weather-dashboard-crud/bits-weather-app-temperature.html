@@ -23,6 +23,7 @@
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-tdata.html">
 <link rel="import" href="./ochart.html">
+<link rel="import" href="./cchart.html">
 
 <dom-module id="weather-dashboard-app-temperature">
   <template>
@@ -67,7 +68,6 @@
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
-
     <base-header-layout x-title="Temperature" no-back>
       <div class="row">
         <div class="column">
@@ -80,7 +80,8 @@
           <div class="row">
             <base-single-grid-item-wrapper>
               <div class="heading">Graph</div>
-              <img src="temp.png"></img>
+              <!-- <div id="chartdiv"></div> -->
+              <div id="chartContainer" style="height: 200px; width: 100%;"></div>
             </base-single-grid-item-wrapper>
           </div>
         </div>
@@ -89,11 +90,8 @@
             <div class="row">
               <div class="heading">History</div>
                 <div class="content">
-                  <template>
-                    <div id="chartdiv"></div>
-                  </template>
                   <paper-listbox>
-                    <template is="dom-repeat" items="[[items]]">
+                    <template is="dom-repeat" items="[[items]]" count=5>
                       <paper-item>Temp reading date: [[item.date]]</paper-item>
                       <paper-item>Temp reading time: [[item.time]]</paper-item>
                       <paper-item>Temp reading data: [[item.celsius]]</paper-item>
