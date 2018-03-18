@@ -14,17 +14,16 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<!--<link rel="import" href="polymer-grid-layout.html">-->
+<!-- <link rel="import" href="polymer-grid-layout.html"> -->
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../base-layout/base-header-layout/base-header-layout.html">
 <link rel="import" href="../base-layout/base-single-grid-item-wrapper/base-single-grid-item-wrapper.html">
-<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
-<link rel="import" href="./weather-dashboard-wdata.html">
+<link rel="import" href="./weather-dashboard-pdata.html">
 
-<dom-module id="weather-dashboard-app-weight">
+<dom-module id="weather-dashboard-app-overview">
   <template>
     <!--<style include="base-shared-styles">
       :host {
@@ -48,68 +47,92 @@
           margin-bottom: 10px;
       }
       .container > div:nth-child(odd) {
-          background-color: rgba(110, 195, 107, 0.8);
+          background-color: rgba(192,192,192, 0.8);
+      }
+      div
+      {
+        align-content: center;
+      }
+      base-header-layout
+      {
+        align-content: center;
+        text-align: center;
       }
       .column {
           float: left;
           width: 45.00%;
           padding: 40px 20px 0px 20px;
       }
-      .row {
-        padding-bottom: 20px;
-      }
       .heading {
-          font-size: 30px;
+          width: 50%;
+          margin: 0 auto;
+          font-size: 20px;
+          border-color: black;
+          border-radius: 5px;
       }
       .reading {
-          font-size: 80px;
+          width: 50%;
+          margin: 0 auto;
+          font-size: 35px;
+          border-color: black;
+          border-radius: 5px;
+      }
+      .silver {
+        width: 50%; margin: 0 auto;
+        background-color: rgba(192,192,192, 0.8);
+      }
+
+      #section
+      {
+        text
+        height: 100px;
+        width: 250px;
       }
     </style>
-
-    <weather-dashboard-wdata items="{{items}}"></weather-dashboard-wdata>
-
-    <base-header-layout x-title="Depth" no-back>
-      <div class="row">
-        <div class="column">
-          <div class="row">
-            <base-single-grid-item-wrapper>
-              <div class="heading">Current Snow Depth</div>
-              <div class="reading">6.5 in</div>
-            </base-single-grid-item-wrapper>
-          </div>
-          <div class="row">
-            <base-single-grid-item-wrapper>
-              <div class="heading">Graph</div>
-              <img src="depth.jpg"></img>
-            </base-single-grid-item-wrapper>
+      <base-header-layout x-title="Overview"  no-back>
+      <div class="container">
+        <div class="heading" id="section">Temperature is:
+          <div class="reading">25F
           </div>
         </div>
-        <div class="column">
-          <base-single-grid-item-wrapper>
-            <div class="row">
-              <div class="heading">History</div>
-                <div class="content">
-                  <template>
-                    <div id="chartdiv"></div>
-                  </template>
-                  <paper-listbox>
-
-                  </paper-listbox>
-                </div>
+        <div class="heading" id="section">Avg snowfall is:
+          <div class="reading">6.5in
+          </div></div>
+        <div class="silver" id="section">Pressure is:
+            <div class="reading">3.32PSI
             </div>
-          </base-single-grid-item-wrapper>
-        </div>
       </div>
+      <div class="content">
      </base-header-layout>
+     <!--Saving some work with fetching individual elements for when we implement findMostRecent
+     <weather-dashboard-tdata titems="{{items}}"></weather-dashboard-tdata>
+     <weather-dashboard-pdata pitems="{{items}}"></weather-dashboard-pdata>
+     <weather-dashboard-wdata witems="{{items}}"></weather-dashboard-wdata> -->
   </template>
   <script>
   (() => {
     'use strict';
-
+    var PolymerUtils = {
+      template: {
+        restamp: function(template) {
+          template.if = false;
+          setTimeout(function() {
+            template.if = true;
+          });
+        },
+      }
+    };
     Polymer({
-      is: 'weather-dashboard-app-weight',
+      is: 'weather-dashboard-app-overview',
+      behaviors: [Polymer.IronResizableBehavior],
       properties: {
-        items: {
+        titems: {
+          type: Array
+        },
+        pitems: {
+          type: Array
+        },
+        witems: {
           type: Array
         }
       }

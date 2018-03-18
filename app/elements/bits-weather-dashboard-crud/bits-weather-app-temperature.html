@@ -53,6 +53,20 @@
       .container > div:nth-child(odd) {
           background-color: rgba(110, 195, 107, 0.8);
       }
+      .column {
+          float: left;
+          width: 45.00%;
+          padding: 40px 20px 0px 20px;
+      }
+      .row {
+        padding-bottom: 20px;
+      }
+      .heading {
+          font-size: 30px;
+      }
+      .reading {
+          font-size: 80px;
+      }
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
@@ -64,15 +78,12 @@
           <div class="row">
             <base-single-grid-item-wrapper>
               <div class="heading">Current Temperature</div>
-              <div class="reading">
-                {{reading}}
-              </div>
+              <div class="reading">25 F</div>
             </base-single-grid-item-wrapper>
           </div>
           <div class="row">
             <base-single-grid-item-wrapper>
               <div class="heading">Graph</div>
-              <div id="chartdiv"></div>
               <img src="temp.png"></img>
             </base-single-grid-item-wrapper>
           </div>
@@ -102,21 +113,19 @@
   <script>
   (() => {
     'use strict';
-    
-    // var PolymerUtils = {
-    //   template: {
-    //     restamp: function(template) {
-    //       // template.if = false;
-    //       // setTimeout(function() {
-    //       //   template.if = true;
-    //       // });
-    //       template._teardownInstance();
-    //       template._ensureInstance();
-    //     },
-    //   }
-    // };
-    
-    
+
+    var PolymerUtils = {
+      template: {
+        restamp: function(template) {
+          template.if = false;
+          setTimeout(function() {
+            template.if = true;
+          });
+        },
+      }
+    };
+
+
     Polymer({
       is: 'weather-dashboard-app-temperature',
       properties: {
@@ -132,14 +141,14 @@
           var ret = this.get([items,index]);
           return ret;
       }
-      
-      // attached: function() {
-      //   var app = this;
-      //   setInterval(function() {
-      //     PolymerUtils.template.restamp(app.$.rend);
-      //   }, 5000);
-      // 
-      // }
+
+      /*attached: function() {
+        var app = this;
+        setInterval(function() {
+          PolymerUtils.template.restamp(app.$.rend);
+        }, 5000);
+
+      }*/
     });
   })();
   </script>

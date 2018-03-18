@@ -42,9 +42,13 @@ limitations under the License.
       
       this._temperatureSettingsManager = new TemperatureSettingsManager();
 
+      // Time in milliseconds
       this.temperatureTimeDelay = 5000;
       this.pressureTimeDelay = 1000;
-      this.weightTimeDelay = 50000;
+      this.weightTimeDelay = 5000;
+
+      this.temperatureRedundantFile = path.join(__dirname, 'backups/__temperatureRecords.csv');
+      this.weightRedundantFile = path.join(__dirname, 'backups/__weightRecords.csv');
 
       this.filePath = path.join(__dirname, 'data.csv');
     }
@@ -63,48 +67,48 @@ limitations under the License.
 
     // Stub for temp driver
     // Returns JSON object to store
-    temperatureDriver(crudManager,settingsManager) {
-      var temperatureSensorExecutable = './pcsensor';
+    temperatureDriver(crudManager, settingsManager,redundantFile) {
+      // Requires compiled executable of temperature sensor code
+      // TODO: Add documentation describing binary compilation process or push binary to master
 
-      // TODO: Add actual file path
-      filePath = '/../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
+      // TODO: Pull out this filepath into class variables or pass as argument
+      filePath = '../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
       exec('.' + filePath,
         function(error, stdout, stderr) {
-          /** Use for debugging
-          console.log(stdout);
-          console.log(stderr);
-          **/
-          if(!error){
-            var split_str = String(stdout).trim().split(" ");
-            console.log("PATAAAATH",filePath);
-            console.log("STOUUUUT",stdout);
-            console.log("stdeerrr",stderr);
-            console.log("STUUUFF",split_str);
-            //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
-
-            var date        = split_str[0];
-            var time        = split_str[1];
-            //var fahrenheit  = split_str[3].slice(0, -1);
-            var celsius     = split_str[4].slice(0, -1);
-
-            //assert(date.length == 10, "Date is incorrectly formatted: " + date);
-            //assert(time.length ==  8, "Time is incorrectly formatted: " + time);
-
-            var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
-            crudManager.storeData(jsonObj);
-            settingsManager.setTempReading(celsius);
-            console.log('Logged temperature reading: ', jsonObj);
+          //Use for debugging
+          //console.log("stdout=",stdout);
+          //console.log("stderr=",stderr);
+          //console.log("error=",error);
+          if(!error) {
+              var split_str = String(stdout).trim().split(" ");
+              //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
+              var date        = split_str[0];
+              var time        = split_str[1];
+              //var fahrenheit  = split_str[3].slice(0, -1);
+              var celsius     = split_str[4].slice(0, -1);
+              var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
+              //assert(date.length == 10, "Date is incorrectly formatted: " + date);
+              //assert(time.length ==  8, "Time is incorrectly formatted: " + time);
+              crudManager.storeData(jsonObj); // TODO: Add error handling on fail
+              settingsManager.setTempReading(celsius);
+              fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
+                if (err) throw err;
+                //console.log('Temperature reading backed up: ', jsonObj);
+              });
+              console.log('Temperature sensor recorded: ', jsonObj);
           } else {
-            var fdate = '2014/10/30';
-            var ftime = '07:00:36';
-            var fcelsius = '23.31'; 
-            var data = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
-            crudManager.storeData(data);
-            settingsManager.setTempReading(fcelsius);
-            //var val = settingsManager.getTempReading();
-            console.log("Logging fake reading:",data);
-            //console.log("get valu: ",val);
-            
+              var fdate = '2014/10/30'
+              var ftime = '07:00:36'
+              var fcelsius = '23.31'
+              var data = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
+
+              crudManager.storeData(data); // TODO: Add error handling on fail
+              settingsManager.setTempReading(fcelsius);
+              fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
+                if (err) throw err;
+                //console.log('Fake temperature reading backed up: ', data);
+              });
+              console.log('FAKE: Temperature sensor recorded: ', data);
           }
       });
     }
@@ -121,22 +125,60 @@ limitations under the License.
       var jsonObj = {'timestamp': utcDate, 'pressure': pressure};
     }
 
-    // Stub for weight driver
-    // Returns JSON object to store
-    weightDriver(crudManager) {
-      var dt = new Date();  // Improve this section, creating new object on every entry
-      var utcDate = dt.toUTCString();
-      console.log('Logging weight reading. Current time: ', utcDate);
 
-      // TODO: Add call to weight sensor here
-      var weight = '50 lbs'
-      var jsonObj = {'timestamp': utcDate, 'pressure': weight};
+
+    // Stub for temp driver
+    // Returns JSON object to store
+    weightDriver(crudManager, redundantFile) {
+      // Requires compiled executable of temperature sensor code
+      // TODO: Add documentation describing binary compilation process or push binary to master
+
+      // TODO: Pull out this filepath into class variables or pass as argument
+      filePath = '../bits-weather-dashboard/sensor_drivers/scale/scale.py';
+      exec('python3 ' + filePath,
+        function(error, stdout, stderr) {
+          //Use for debugging
+          //console.log("stdout=",stdout);
+          //console.log("stderr=",stderr);
+          //console.log("error=",error);
+          if(!error) {
+              var split_str = String(stdout).trim().split(" ");
+              //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
+              var date        = split_str[0];
+              var time        = split_str[1];
+              var weight     = split_str[2];
+              var jsonObj = {'date': date, 'time': time, 'weight': weight};
+              crudManager.storeData(jsonObj); // TODO: Add error handling on fail
+
+              fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
+                if (err) throw err;
+                //console.log('Temperature reading backed up: ', jsonObj);
+              });
+              console.log('Weight sensor recorded: ', jsonObj);
+          } else {
+              var fdate = '2014/10/30'
+              var ftime = '07:00:36'
+              var fweight = '0.00'
+              var data = {'date': fdate, 'time': ftime, 'weight': fweight};
+
+              crudManager.storeData(data); // TODO: Add error handling on fail
+
+              fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
+                if (err) throw err;
+                //console.log('Fake temperature reading backed up: ', data);
+              });
+              console.log('FAKE: Weight sensor recorded: ', data);
+          }
+      });
     }
 
+
+
+
     // Generic looping function, used by each sensor
-    loopReadDataFromFile(crudManager, settingsManager, driverFunction, timeDelay) {
-      driverFunction(crudManager,settingsManager);
-      setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, settingsManager, driverFunction, timeDelay);
+    loopReadDataFromFile(crudManager,settingsManager, driverFunction, timeDelay, redundantFile) {
+      driverFunction(crudManager, redundantFile);
+      setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, settingsManager,driverFunction, timeDelay, redundantFile);
     }
 
     readDataFromFile(callback) {
@@ -157,9 +199,9 @@ limitations under the License.
       this._temperatureSettingsManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this._temperatureSettingsManager, this.temperatureDriver, this.temperatureTimeDelay));
+      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this._temperatureSettingsManager,this.temperatureDriver, this.temperatureTimeDelay, this.temperatureRedundantFile))
       //.then(() => this.loopReadDataFromFile(this._pressureCrudManager, this.pressureDriver, this.pressureTimeDelay))
-      //.then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay));
+      .then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay, this.weightRedundantFile));
     }
 
     unload() {

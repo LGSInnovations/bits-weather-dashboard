@@ -27,15 +27,15 @@
         height: 100%;
       }
     </style>
-    
-    <base-drawer-layout
+
+    <base-drawer-layout selected="0"
       id="layout"
       m-name="weather-dashboard"
       m-icon="icons:swap-vert"
       m-display-name="Weather Dashboard"
       pages="[[pages]]"
       page-name="{{currentPage}}"
-      default-page-name="crud">
+      default-page-name="Temperature">
     </base-drawer-layout>
 
     <paper-toast id="snackbar"></paper-toast>
@@ -44,7 +44,7 @@
   <script>
   (() => {
     'use strict';
-   
+
 
     Polymer({
       is: 'weather-dashboard-app',
@@ -53,7 +53,14 @@
         pages: {
           type: Array,
           value: () => {
-            return [{
+            return [
+            {
+              name: 'Overview',
+              element: 'weather-dashboard-app-overview',
+              import: '/elements/bits-weather-dashboard-crud/bits-weather-app-overview.html',
+              displayName: 'Overview',
+              icon: 'device:nfc'
+            },{
               name: 'Temperature',
               element: 'weather-dashboard-app-temperature',
               import: '/elements/bits-weather-dashboard-crud/bits-weather-app-temperature.html',
@@ -77,7 +84,7 @@
       },
       toggleSidenav: function() {
         this.$.layout.toggleSidenav();
-      }   
+      }
     });
   })();
   </script>
