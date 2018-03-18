@@ -78,7 +78,7 @@
           <div class="row">
             <base-single-grid-item-wrapper>
               <div class="heading">Current Temperature</div>
-              <div class="reading">25 F</div>
+              <div class="reading">{{reading}}</div>
             </base-single-grid-item-wrapper>
           </div>
           <div class="row">
@@ -131,24 +131,8 @@
       properties: {
         items: {
           type: Array
-        },
-        celsius: {
-          type: String
         }
-      },
-      isCurrent: function(item){
-          var index = this.items.indexOf(item);
-          var ret = this.get([items,index]);
-          return ret;
       }
-
-      /*attached: function() {
-        var app = this;
-        setInterval(function() {
-          PolymerUtils.template.restamp(app.$.rend);
-        }, 5000);
-
-      }*/
     });
   })();
   </script>
