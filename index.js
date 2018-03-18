@@ -137,13 +137,19 @@ limitations under the License.
           //console.log("stdout=",stdout);
           //console.log("stderr=",stderr);
           //console.log("error=",error);
+          var constDepthDiv = 1.05;
+
           if(!error) {
               var split_str = String(stdout).trim().split(" ");
               //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
-              var date        = split_str[0];
-              var time        = split_str[1];
+              var date       = split_str[0];
+              var time       = split_str[1];
               var weight     = split_str[2];
-              var jsonObj = {'date': date, 'time': time, 'weight': weight};
+
+              var depthInInches = (parseFloat(weight)/constDepthDiv).toFixed(2);
+              console.log('Depth in inches', depthInInches);
+
+              var jsonObj = {'date': date, 'time': time, 'weight': weight, 'estimatedDepth': depthInInches};
               crudManager.storeData(jsonObj); // TODO: Add error handling on fail
 
               fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
@@ -152,18 +158,22 @@ limitations under the License.
               });
               console.log('Weight sensor recorded: ', jsonObj);
           } else {
-              var fdate = '2014/10/30'
-              var ftime = '07:00:36'
-              var fweight = '0.00'
-              var data = {'date': fdate, 'time': ftime, 'weight': fweight};
+              var fdate = '2014/10/30';
+              var ftime = '07:00:36';
+              var fweight = '2.00';
 
-              crudManager.storeData(data); // TODO: Add error handling on fail
+              var fdepthInInches = (parseFloat(fweight)/constDepthDiv).toFixed(2);
+              console.log('Depth in inches', fdepthInInches);
 
-              fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
+              var fjsonObj = {'date': fdate, 'time': ftime, 'weight': fweight, 'estimatedDepth': fdepthInInches};
+
+              crudManager.storeData(fjsonObj); // TODO: Add error handling on fail
+
+              fs.appendFile(redundantFile, JSON.stringify(fjsonObj)+'\n', (err) => {
                 if (err) throw err;
                 //console.log('Fake temperature reading backed up: ', data);
               });
-              console.log('FAKE: Weight sensor recorded: ', data);
+              console.log('FAKE: Weight sensor recorded: ', fjsonObj);
           }
       });
     }
