@@ -177,7 +177,7 @@ limitations under the License.
 
     // Generic looping function, used by each sensor
     loopReadDataFromFile(crudManager,settingsManager, driverFunction, timeDelay, redundantFile) {
-      driverFunction(crudManager, redundantFile);
+      driverFunction(crudManager, settingsManager, redundantFile);
       setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, settingsManager,driverFunction, timeDelay, redundantFile);
     }
 
