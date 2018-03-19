@@ -22,7 +22,9 @@ limitations under the License.
   const WeightCrudManager = require('./lib/crud-manager/weight-crud-manager.js');
   
   const TemperatureSettingsManager = require('./lib/settings-manager/temperature-settings-manager.js');
-
+  const PressureSettingsManager = require('./lib/settings-manager/pressure-settings-manager.js');
+  const WeightSettingsManager = require('./lib/settings-manager/weight-settings-manager.js');
+  
   var path       = require('path'),
       fs         = require('fs'),
       exec       = require('child_process').exec,
@@ -41,7 +43,9 @@ limitations under the License.
       this._weightCrudManager = new WeightCrudManager();
       
       this._temperatureSettingsManager = new TemperatureSettingsManager();
-
+      this._pressureSettingsManager = new PressureSettingsManager();
+      this._weightSettingsManager = new WeightSettingsManager();
+      
       // Time in milliseconds
       this.temperatureTimeDelay = 5000;
       this.pressureTimeDelay = 1000;
@@ -115,7 +119,7 @@ limitations under the License.
 
     // Stub for pressure driver
     // Returns JSON object to store
-    pressureDriver(crudManager) {
+    pressureDriver(crudManager,settingsManager) {
       var dt = new Date();  // Improve this section, creating new object on every entry
       var utcDate = dt.toUTCString();
       console.log('Logging pressure reading. Current time: ', utcDate);
@@ -129,7 +133,7 @@ limitations under the License.
 
     // Stub for temp driver
     // Returns JSON object to store
-    weightDriver(crudManager, redundantFile) {
+    weightDriver(crudManager, settingsManager, redundantFile) {
       // Requires compiled executable of temperature sensor code
       // TODO: Add documentation describing binary compilation process or push binary to master
 
@@ -149,7 +153,7 @@ limitations under the License.
               var weight     = split_str[2];
               var jsonObj = {'date': date, 'time': time, 'weight': weight};
               crudManager.storeData(jsonObj); // TODO: Add error handling on fail
-
+              settingsManager.setWeightReading(weight);
               fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
                 if (err) throw err;
                 //console.log('Temperature reading backed up: ', jsonObj);
@@ -162,7 +166,8 @@ limitations under the License.
               var data = {'date': fdate, 'time': ftime, 'weight': fweight};
 
               crudManager.storeData(data); // TODO: Add error handling on fail
-
+              settingsManager.setWeightReading(fweight);
+              
               fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
                 if (err) throw err;
                 //console.log('Fake temperature reading backed up: ', data);
@@ -178,7 +183,7 @@ limitations under the License.
     // Generic looping function, used by each sensor
     loopReadDataFromFile(crudManager,settingsManager, driverFunction, timeDelay, redundantFile) {
       driverFunction(crudManager, settingsManager, redundantFile);
-      setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, settingsManager,driverFunction, timeDelay, redundantFile);
+      setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, settingsManager, driverFunction, timeDelay, redundantFile);
     }
 
     readDataFromFile(callback) {
@@ -197,11 +202,13 @@ limitations under the License.
       this._pressureCrudManager.load(messageCenter);
       this._weightCrudManager.load(messageCenter);
       this._temperatureSettingsManager.load(messageCenter);
+      this._pressureSettingsManager.load(messageCenter);
+      this._weightSettingsManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
-      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this._temperatureSettingsManager,this.temperatureDriver, this.temperatureTimeDelay, this.temperatureRedundantFile))
-      //.then(() => this.loopReadDataFromFile(this._pressureCrudManager, this.pressureDriver, this.pressureTimeDelay))
-      .then(() => this.loopReadDataFromFile(this._weightCrudManager, this.weightDriver, this.weightTimeDelay, this.weightRedundantFile));
+      .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this._temperatureSettingsManager, this.temperatureDriver, this.temperatureTimeDelay, this.temperatureRedundantFile))
+      //.then(() => this.loopReadDataFromFile(this._pressureCrudManager, this._pressureSettingsManager, this.pressureDriver, this.pressureTimeDelay))
+      .then(() => this.loopReadDataFromFile(this._weightCrudManager, this._weightSettingsManager, this.weightDriver, this.weightTimeDelay, this.weightRedundantFile));
     }
 
     unload() {
@@ -209,7 +216,9 @@ limitations under the License.
       .then(() => console.log(this._temperatureCrudManager.unload(messageCenter)))
       .then(() => console.log(this._pressureCrudManager.unload(messageCenter)))
       .then(() => console.log(this._weightCrudManager.unload(messageCenter)))
-      .then(() => console.log(this._temperatureSettingsManager.unload(messageCenter)));
+      .then(() => console.log(this._temperatureSettingsManager.unload(messageCenter)))
+      .then(() => console.log(this._pressureSettingsManager.unload(messageCenter)))
+      .then(() => console.log(this._weightSettingsManager.unload(messageCenter)));
     }
   }
 
