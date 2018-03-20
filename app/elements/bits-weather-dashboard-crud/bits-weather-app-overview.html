@@ -33,8 +33,18 @@
       }
     </style>-->
     <style is="custom-style">
-      body {
-        background-image: url("skiing-background-6.jpg");
+      img.bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: auto;
+        min-height: 100%;
+
+        min-width: 1024px;
+
+        z-index: -999;
       }
       .container {
           @apply(--layout-grid-justify-items-center);
@@ -87,7 +97,7 @@
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
 
       <base-header-layout x-title="Overview"  no-back>
-      <body>
+      <img class="bg" src="skiing-background-6.jpg" alt="">
       <div class="container">
         <div class="heading" id="section">Temperature is:
           <div class="reading">{{reading}}
@@ -98,10 +108,11 @@
           </div>
         </div>
         <div class="silver" id="section">Pressure is:
-            <div class="reading">3.32PSI
-            </div>
+          <div class="reading">3.32PSI
+          </div>
         </div>
-      </body>
+      </div>
+
      </base-header-layout>
      <!--Saving some work with fetching individual elements for when we implement findMostRecent
      <weather-dashboard-tdata titems="{{items}}"></weather-dashboard-tdata>
