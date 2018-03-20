@@ -33,6 +33,9 @@
       }
     </style>-->
     <style is="custom-style">
+      body {
+        background-image: url("skiing-background-6.jpg");
+      }
       .container {
           @apply(--layout-grid-justify-items-center);
 
@@ -84,7 +87,7 @@
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
 
       <base-header-layout x-title="Overview"  no-back>
-      <body background="skiing-background-6.jpg">
+      <body>
       <div class="container">
         <div class="heading" id="section">Temperature is:
           <div class="reading">{{reading}}
