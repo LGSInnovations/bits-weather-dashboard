@@ -85,15 +85,15 @@ limitations under the License.
           var fdate = '2014/10/30'
           var ftime = '07:00:36'
           var fcelsius = '23.31'
-          var data = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
+          var fjsonObj = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
 
-          crudManager.storeData(data); // TODO: Add error handling on fail
+          crudManager.storeData(fjsonObj); // TODO: Add error handling on fail
           settingsManager.setTempReading(fcelsius);
-          fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
+          fs.appendFile(redundantFile, JSON.stringify(fjsonObj)+'\n', (err) => {
             if (err) throw err;
-            //console.log('Fake temperature reading backed up: ', data);
+            //console.log('Fake temperature reading backed up: ', fjsonObj);
           });
-          console.log('FAKE: Temperature sensor recorded: ', data);
+          console.log('FAKE: Temperature sensor recorded: ', fjsonObj);
       }
 
       else {
@@ -133,7 +133,7 @@ limitations under the License.
 
                 crudManager.storeData(jsonObj); // TODO: Add error handling on fail
                 settingsManager.setTempReading(celsius);
-                fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
+                fs.appendFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
                   if (err) throw err;
                   //console.log('Temperature reading backed up: ', jsonObj);
                 });
@@ -149,22 +149,25 @@ limitations under the License.
 
     // Returns JSON object to store
     weightDriver(crudManager, settingsManager, redundantFile) {
+      var constDepthDiv = 1.05;
 
       // Return fake readings
       if (this.weight_stub_driver_on) {
-          var fdate = '2014/10/30'
-          var ftime = '07:00:36'
-          var fweight = '0.00'
-          var data = {'date': fdate, 'time': ftime, 'weight': fweight};
+          var fdate   = '2014/10/30'
+          var ftime   = '07:00:36'
+          var fweight = '2.00'
+          var depthInInches = (parseFloat(weight)/constDepthDiv).toFixed(2);
 
-          crudManager.storeData(data); // TODO: Add error handling on fail
+          var fjsonObj = {'date': date, 'time': time, 'weight': weight, 'estimatedDepth': depthInInches};
+
+          crudManager.storeData(fjsonObj); // TODO: Add error handling on fail
           settingsManager.setWeightReading(fweight);
           
-          fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
+          fs.appendFile(redundantFile, JSON.stringify(fjsonObj)+'\n', (err) => {
             if (err) throw err;
-            //console.log('Fake temperature reading backed up: ', data);
+            //console.log('Fake temperature reading backed up: ', fjsonObj);
           });
-          console.log('FAKE: Weight sensor recorded: ', data);
+          console.log('FAKE: Weight sensor recorded: ', fjsonObj);
       }
       else {
 
@@ -185,6 +188,8 @@ limitations under the License.
                   var date   = split_str[0];
                   var time   = split_str[1];
                   var weight = split_str[2];
+                  var fdepthInInches = (parseFloat(fweight)/constDepthDiv).toFixed(2);
+
 
                   if (date.length != 10) {
                     console.log("ERROR: Weight driver date is incorrectly formatted: " + date);
@@ -199,10 +204,10 @@ limitations under the License.
                     return;
                   }
 
-                  var jsonObj = {'date': date, 'time': time, 'weight': weight};
+                  var jsonObj = {'date': fdate, 'time': ftime, 'weight': fweight, 'estimatedDepth': fdepthInInches};
                   crudManager.storeData(jsonObj); // TODO: Add error handling on fail
                   settingsManager.setWeightReading(weight);
-                  fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
+                  fs.appendFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
                     if (err) throw err;
                     //console.log('Temperature reading backed up: ', jsonObj);
                   });
