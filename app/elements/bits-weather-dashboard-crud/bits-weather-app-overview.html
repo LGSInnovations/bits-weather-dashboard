@@ -49,15 +49,6 @@
       .container > div:nth-child(odd) {
           background-color: rgba(192,192,192, 0.8);
       }
-      div
-      {
-        align-content: center;
-      }
-      base-header-layout
-      {
-        align-content: center;
-        text-align: center;
-      }
       .column {
           float: left;
           width: 45.00%;
@@ -93,6 +84,7 @@
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
 
       <base-header-layout x-title="Overview"  no-back>
+      <body background="skiing-background-6.jpg">
       <div class="container">
         <div class="heading" id="section">Temperature is:
           <div class="reading">{{reading}}
@@ -106,6 +98,7 @@
             </div>
       </div>
       <div class="content">
+      </body>
      </base-header-layout>
      <!--Saving some work with fetching individual elements for when we implement findMostRecent
      <weather-dashboard-tdata titems="{{items}}"></weather-dashboard-tdata>
