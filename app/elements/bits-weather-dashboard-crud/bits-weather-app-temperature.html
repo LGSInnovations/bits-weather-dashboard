@@ -14,15 +14,18 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../settings-document/settings-document.html">
 <!--<link rel="import" href="polymer-grid-layout.html">-->
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../base-layout/base-header-layout/base-header-layout.html">
 <link rel="import" href="../base-layout/base-single-grid-item-wrapper/base-single-grid-item-wrapper.html">
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-tdata.html">
 <link rel="import" href="./ochart.html">
+
 
 <dom-module id="weather-dashboard-app-temperature">
   <template>
@@ -67,14 +70,15 @@
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
-
+    <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
+    
     <base-header-layout x-title="Temperature" no-back>
       <div class="row">
         <div class="column">
           <div class="row">
             <base-single-grid-item-wrapper>
               <div class="heading">Current Temperature</div>
-              <div class="reading">25 F</div>
+              <div class="reading">{{reading}}</div>
             </base-single-grid-item-wrapper>
           </div>
           <div class="row">
@@ -129,14 +133,6 @@
           type: Array
         }
       }
-
-      /*attached: function() {
-        var app = this;
-        setInterval(function() {
-          PolymerUtils.template.restamp(app.$.rend);
-        }, 5000);
-
-      }*/
     });
   })();
   </script>
