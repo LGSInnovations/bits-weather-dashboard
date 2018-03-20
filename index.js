@@ -156,9 +156,9 @@ limitations under the License.
           var fdate   = '2014/10/30'
           var ftime   = '07:00:36'
           var fweight = '2.00'
-          var depthInInches = (parseFloat(weight)/constDepthDiv).toFixed(2);
+          var fdepthInInches = (parseFloat(weight)/constDepthDiv).toFixed(2);
 
-          var fjsonObj = {'date': date, 'time': time, 'weight': weight, 'estimatedDepth': depthInInches};
+          var fjsonObj = {'date': date, 'time': time, 'weight': weight, 'estimatedDepth': fdepthInInches};
 
           crudManager.storeData(fjsonObj); // TODO: Add error handling on fail
           settingsManager.setWeightReading(fweight);
@@ -188,7 +188,7 @@ limitations under the License.
                   var date   = split_str[0];
                   var time   = split_str[1];
                   var weight = split_str[2];
-                  var fdepthInInches = (parseFloat(fweight)/constDepthDiv).toFixed(2);
+                  var depthInInches = (parseFloat(fweight)/constDepthDiv).toFixed(2);
 
 
                   if (date.length != 10) {
@@ -203,8 +203,12 @@ limitations under the License.
                     console.log("ERROR: Weight driver reading is out of bounds: " + weight);
                     return;
                   }
+                  if (depthInInches < 0 || depthInInches > 96) {
+                    console.log("ERROR: Weight driver depth in inches is out of bounds: " + depthInInches);
+                    return;
+                  }
 
-                  var jsonObj = {'date': fdate, 'time': ftime, 'weight': fweight, 'estimatedDepth': fdepthInInches};
+                  var jsonObj = {'date': fdate, 'time': ftime, 'weight': fweight, 'estimatedDepth': depthInInches};
                   crudManager.storeData(jsonObj); // TODO: Add error handling on fail
                   settingsManager.setWeightReading(weight);
                   fs.appendFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
