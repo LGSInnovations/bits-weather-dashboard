@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  -->
+
+
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../settings-document/settings-document.html">
 <!--<link rel="import" href="polymer-grid-layout.html">-->
@@ -24,114 +26,77 @@
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-tdata.html">
-<link rel="import" href="./ochart.html">
-
+<!-- <link rel="import" href="./ochart.html"> -->
+<link rel="import" href="chart-js-import.html">
+<link rel="import" href="chart-property-behavior.html">
+<link rel="import" href="context-behavior.html">
+<link rel="import" href="resize-behavior.html">
+<link rel="import" href="chart-styles.html">
 
 <dom-module id="weather-dashboard-app-temperature">
   <template>
-    <!--<style include="base-shared-styles">
-      :host {
-        display: block;
-        position: relative;
-        height: 100%;
-      }
-    </style>-->
-    <style is="custom-style">
-      .container {
-          @apply(--layout-grid-justify-items-center);
 
-          grid-template-columns: 200px 200px 200px;
-      }
-      .container > div {
-          border: 1px solid rgba(0,95,107);
-          border-radius: 3px;
-          background-color: rgba(0, 95, 107, 0.8);
-          padding: 0.2em;
-          color: #fff;
-          margin-bottom: 10px;
-      }
-      .container > div:nth-child(odd) {
-          background-color: rgba(110, 195, 107, 0.8);
-      }
-      .column {
-          float: left;
-          width: 45.00%;
-          padding: 40px 20px 0px 20px;
-      }
-      .row {
-        padding-bottom: 20px;
-      }
-      .heading {
-          font-size: 30px;
-      }
-      .reading {
-          font-size: 80px;
-      }
-    </style>
+     <style include="chart-styles"></style>
 
-    <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
-    <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
-    
-    <base-header-layout x-title="Temperature" no-back>
-      <div class="row">
-        <div class="column">
-          <div class="row">
-            <base-single-grid-item-wrapper>
-              <div class="heading">Current Temperature</div>
-              <div class="reading">{{reading}}</div>
-            </base-single-grid-item-wrapper>
-          </div>
-          <div class="row">
-            <base-single-grid-item-wrapper>
-              <div class="heading">Graph</div>
-              <img src="temp.png"></img>
-            </base-single-grid-item-wrapper>
-          </div>
-        </div>
-        <div class="column">
-          <base-single-grid-item-wrapper>
-            <div class="row">
-              <div class="heading">History</div>
-                <div class="content">
-                  <template>
-                    <div id="chartdiv"></div>
-                  </template>
-                  <paper-listbox>
-                    <template is="dom-repeat" items="[[items]]">
-                      <paper-item>Temp reading date: [[item.date]]</paper-item>
-                      <paper-item>Temp reading time: [[item.time]]</paper-item>
-                      <paper-item>Temp reading data: [[item.celsius]]</paper-item>
-                    </template>
-                  </paper-listbox>
-                </div>
-            </div>
-          </base-single-grid-item-wrapper>
-        </div>
-      </div>
-     </base-header-layout>
+
+
+     <script>
+         data = {
+           labels: ["January", "February", "March", "April", "May", "June", "July"],
+           datasets: [
+             {
+               label: "My First dataset",
+               backgroundColor: "rgba(220,220,220,0.2)",
+               borderColor: "rgba(220,220,220,1)",
+               borderWidth: 1,
+               pointBackgroundColor: "rgba(220,220,220,1)",
+               pointBorderColor: "#fff",
+               pointHoverBackgroundColor: "#fff",
+               pointHoverBorderColor: "rgba(220,220,220,1)",
+               data: [65, 59, 80, 81, 56, 55, 40]
+             }
+           ]
+         };
+        console.log(data);
+     </script>
+
+     <h1>WHY IS THIS HAPPENING</h1>
+     <div>[[data]]</div>
+       <chart-line data="[[data]]"></chart-line>
+
+     <div>
+       <canvas id="canvas"></canvas>
+     </div>
+
   </template>
+
   <script>
   (() => {
     'use strict';
 
-    var PolymerUtils = {
-      template: {
-        restamp: function(template) {
-          template.if = false;
-          setTimeout(function() {
-            template.if = true;
-          });
-        },
-      }
-    };
+    // var PolymerUtils = {
+    //   template: {
+    //     restamp: function(template) {
+    //       template.if = false;
+    //       setTimeout(function() {
+    //         template.if = true;
+    //       });
+    //     },
+    //   }
+    // };
+
 
 
     Polymer({
       is: 'weather-dashboard-app-temperature',
-      properties: {
-        items: {
-          type: Array
-        }
+      behaviors: [
+        Polymer.IronResizableBehavior,
+        ChartBehaviors.ChartPropertyBehavior,
+        ChartBehaviors.ContextBehavior,
+        ChartBehaviors.ResizeBehavior
+      ],
+      ready: function() {
+        this._setType('line');
       }
     });
   })();
