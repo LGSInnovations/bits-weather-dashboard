@@ -165,7 +165,7 @@ limitations under the License.
           } else {
               var fdate = '2014/10/30'
               var ftime = '07:00:36'
-              var fweight = '0.00'
+              var fweight = '0.20'
               var data = {'date': fdate, 'time': ftime, 'weight': fweight};
 
               crudManager.storeData(data); // TODO: Add error handling on fail
@@ -213,7 +213,7 @@ limitations under the License.
           } else {
               var fdate = '2014/10/30'
               var ftime = '07:00:36'
-              var fdistance = '0.00'
+              var fdistance = '0.01'
               var data = {'date': fdate, 'time': ftime, 'distance': fdistance};
 
               crudManager.storeData(data); // TODO: Add error handling on fail
@@ -229,15 +229,20 @@ limitations under the License.
       //this.qualityCompute();
     }
     
-    qualityCompute(depthManager, qualityManager, weightManager) {
-      //get depthReading
-      var depth = depthManager.getDepthReading();
-      var weight = weightManager.getWeightReading();
-      console.log('TESSSSTTINGINGING::::depth::::::weight',depth,weight)
-      //compute calculation
-      var quality = depth + weight
-      qualityManager.setQualityReading(quality);
-      console.log('Quality data:',quality);
+    qualityCompute(depthManager, qualityManager, weightManager) {      
+      weightManager.getWeightReading()
+        .then(weight => {
+          console.log('weight reading',weight)
+          return Promise.all([depthManager.getDepthReading(),weight]);
+        })
+        .then(([depth,weight]) => {
+          console.log("weight",weight);
+          console.log("depth",depth);
+          //calculate snow quality metric
+          var quality = Number(weight) + Number(depth)
+          console.log('QQ',quality)
+          qualityManager.setQualityReading(quality);
+        });
     }
 
 
