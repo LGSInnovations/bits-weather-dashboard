@@ -28,13 +28,7 @@
 
 <dom-module id="weather-dashboard-app-overview">
   <template>
-    <!--<style include="base-shared-styles">
-      :host {
-        display: block;
-        position: relative;
-        height: 100%;
-      }
-    </style>-->
+    
     <style is="custom-style">
       img.bg {
         position: fixed;
@@ -49,31 +43,6 @@
 
         z-index: -999;
       }
-      /* .container {
-          @apply(--layout-grid-justify-items-center);
-
-          grid-template-columns: 200px 200px 200px;
-      }
-      .container > div {
-          border: 1px solid rgba(0,95,107);
-          border-radius: 3px;
-          background-color: rgba(0, 95, 107, 0.8);
-          padding: 0.2em;
-          color: #fff;
-          margin-bottom: 10px;
-      }
-      .container > div:nth-child(odd) {
-          background-color: rgba(192,192,192, 0.8);
-      } */
-      /* div
-      {
-        align-content: center;
-      }
-      base-header-layout
-      {
-        align-content: center;
-        text-align: center;
-      } */
       .column {
           float: left;
           width: 20%;
@@ -94,11 +63,6 @@
           opacity: 1;
           text-align: center;
       }
-      /* .silver {
-        width: 50%; margin: 0 auto;
-        background-color: rgba(192,192,192, 0.8);
-      } */
-
       #section
       {
         text
@@ -119,7 +83,7 @@
           <div class="column">
             <base-single-grid-item-wrapper>
               <div id="section">Temperature:</div>
-              <div class="reading">{{treading}} &degC</div>
+              <div class="reading">{{treading}} &degF</div>
             </base-single-grid-item-wrapper>
           </div>
           <div class="column">
