@@ -68,6 +68,13 @@
       .reading {
           font-size: 50px;
       }
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 15px;
+      }
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
@@ -99,11 +106,21 @@
                   </template> -->
                   <div id="scrollable-element" style="display:block;height:300px;overflow-y:auto;">
                   <x-element scroll-target="scrollable-element">
-                    <paper-listbox>
+                      <table style=width:"100%">
+                      <tr>
+                        <td>Date</td>
+                        <td>Time</td>
+                        <td>Temperature</td>
+                      </tr>
                       <template is="dom-repeat" items="[[items]]">
-                        <paper-item>Date: [[item.date]] Time: [[item.time]] Temp: [[item.celsius]] &degC</paper-item>
+                        <!-- <paper-item>Date: [[item.date]] Time: [[item.time]] Temp: [[item.celsius]] &degC</paper-item> -->
+                        <tr>
+                          <td>[[item.date]]</td>
+                          <td>[[item.time]]</td>
+                          <td>[[item.celsius]] &degC</td>
+                        </tr>
                       </template>
-                    </paper-listbox>
+                      </table>
                   </x-element>
                   </div>
                 </div>
