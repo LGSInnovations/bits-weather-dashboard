@@ -27,7 +27,7 @@ bits-weather-dashboard<br />
 bits-settings: https://github.com/LGSInnovations/bits-settings<br />
 
 ### Installing
-Install BITS with instructions from README at https://github.com/LGSInnovations/bits
+Install BITS with instructions from README at https://github.com/LGSInnovations/bits<br />
 Install bits-weather-dashboard as a BITS module from https://github.com/callie-jones/bits-weather-dashboard
 
 
