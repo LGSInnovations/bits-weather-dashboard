@@ -36,7 +36,20 @@
       }
     </style>-->
     <style is="custom-style">
-      .container {
+      img.bg {
+        position: fixed;
+        top: 20px;
+        left: 0;
+
+        width: 100%;
+        height: auto;
+        min-height: 100%;
+
+        min-width: 1024px;
+
+        z-index: -999;
+      }
+      /* .container {
           @apply(--layout-grid-justify-items-center);
 
           grid-template-columns: 200px 200px 200px;
@@ -51,8 +64,8 @@
       }
       .container > div:nth-child(odd) {
           background-color: rgba(192,192,192, 0.8);
-      }
-      div
+      } */
+      /* div
       {
         align-content: center;
       }
@@ -60,30 +73,31 @@
       {
         align-content: center;
         text-align: center;
-      }
+      } */
       .column {
           float: left;
-          width: 45.00%;
+          width: 20%;
+          height: 200px;
           padding: 40px 20px 0px 20px;
+          opacity: 0.8;
       }
       .heading {
-          width: 50%;
           margin: 0 auto;
-          font-size: 20px;
+          font-size: 30px;
           border-color: black;
-          border-radius: 5px;
+          opacity: 1;
       }
       .reading {
-          width: 50%;
           margin: 0 auto;
-          font-size: 35px;
+          font-size: 50px;
           border-color: black;
-          border-radius: 5px;
+          opacity: 1;
+          text-align: center;
       }
-      .silver {
+      /* .silver {
         width: 50%; margin: 0 auto;
         background-color: rgba(192,192,192, 0.8);
-      }
+      } */
 
       #section
       {
@@ -92,26 +106,42 @@
         width: 250px;
       }
     </style>
-    
+
     <weather-dashboard-wdata items="{{items}}"></weather-dashboard-wdata>
     <weather-dashboard-ddata items="{{items}}"></weather-dashboard-ddata>
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
     <settings-document tag="current#WeightSettings" key="reading" data="{{wreading}}"></settings-document>
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{treading}}"></settings-document>
     <settings-document tag="current#DepthSettings" key="reading" data="{{dreading}}"></settings-document>
-      <base-header-layout x-title="Overview"  no-back>
+      <body>
+      <img class="bg" src="skiing-background-6.jpg" alt="">
       <div class="container">
-        <div class="heading" id="section">Temperature is:
-          <div class="reading">{{treading}}</div>
-        </div>
-        <div class="heading" id="section">Avg snowfall is:
-          <div class="reading">{{wreading}}</div>
-        </div>
-        <div class="silver" id="section">Depth is:
-            <div class="reading">{{dreading}}</div>
+          <div class="column">
+            <base-single-grid-item-wrapper>
+              <div id="section">Temperature:</div>
+              <div class="reading">{{treading}} &degC</div>
+            </base-single-grid-item-wrapper>
+          </div>
+          <div class="column">
+            <base-single-grid-item-wrapper>
+              <div id="section">Snow Weight:</div>
+              <div class="reading">{{wreading}} lbs</div>
+            </base-single-grid-item-wrapper>
+          </div>
+          <div class="column">
+            <base-single-grid-item-wrapper>
+              <div id="section">Snow Depth:</div>
+              <div class="reading">{{dreading}} in</div>
+            </base-single-grid-item-wrapper>
+          </div>
+          <div class="column">
+            <base-single-grid-item-wrapper>
+              <div id="section">Snow Condition:</div>
+              <div class="reading">Powder</div>
+            </base-single-grid-item-wrapper>
+          </div>
       </div>
-      <div class="content">
-     </base-header-layout>
+      </body>
      <!--Saving some work with fetching individual elements for when we implement findMostRecent
      <weather-dashboard-tdata titems="{{items}}"></weather-dashboard-tdata>
      <weather-dashboard-pdata pitems="{{items}}"></weather-dashboard-pdata>
