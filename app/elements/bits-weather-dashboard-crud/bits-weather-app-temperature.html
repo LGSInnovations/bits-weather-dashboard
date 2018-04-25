@@ -25,6 +25,7 @@
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-tdata.html">
 <link rel="import" href="./ochart.html">
+<link rel="import" href="../../bower_components/iron-scroll-target-behavior.html">
 
 
 <dom-module id="weather-dashboard-app-temperature">
@@ -62,16 +63,16 @@
         padding-bottom: 20px;
       }
       .heading {
-          font-size: 30px;
+          font-size: 25px;
       }
       .reading {
-          font-size: 80px;
+          font-size: 50px;
       }
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
-    
+
     <base-header-layout x-title="Temperature" no-back>
       <div class="row">
         <div class="column">
@@ -93,16 +94,18 @@
             <div class="row">
               <div class="heading">History</div>
                 <div class="content">
-                  <template>
+                  <!-- <template>
                     <div id="chartdiv"></div>
-                  </template>
-                  <paper-listbox>
-                    <template is="dom-repeat" items="[[items]]">
-                      <paper-item>Temp reading date: [[item.date]]</paper-item>
-                      <paper-item>Temp reading time: [[item.time]]</paper-item>
-                      <paper-item>Temp reading data: [[item.celsius]]</paper-item>
-                    </template>
-                  </paper-listbox>
+                  </template> -->
+                  <div id="scrollable-element" style="display:block;height:300px;overflow-y:auto;">
+                  <x-element scroll-target="scrollable-element">
+                    <paper-listbox>
+                      <template is="dom-repeat" items="[[items]]">
+                        <paper-item>Date: [[item.date]] Time: [[item.time]] Temp: [[item.celsius]] &degC</paper-item>
+                      </template>
+                    </paper-listbox>
+                  </x-element>
+                  </div>
                 </div>
             </div>
           </base-single-grid-item-wrapper>
