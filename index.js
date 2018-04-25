@@ -24,6 +24,7 @@ limitations under the License.
   const TemperatureSettingsManager = require('./lib/settings-manager/temperature-settings-manager.js');
   const WeightSettingsManager = require('./lib/settings-manager/weight-settings-manager.js');
   const DepthSettingsManager = require('./lib/settings-manager/depth-settings-manager.js');
+  const QualitySettingsManager = require('./lib/settings-manager/quality-settings-manager.js');
   
   var path       = require('path'),
       fs         = require('fs'),
@@ -45,6 +46,7 @@ limitations under the License.
       this._temperatureSettingsManager = new TemperatureSettingsManager();
       this._weightSettingsManager = new WeightSettingsManager();
       this._depthSettingsManager = new DepthSettingsManager();
+      this._qualitySettingsManager = new QualitySettingsManager();
       
       // Time in milliseconds
       this.temperatureTimeDelay = 5000;
@@ -224,8 +226,19 @@ limitations under the License.
               console.log('FAKE: Depth data recorded: ', data);
           }
       });
+      //this.qualityCompute();
     }
-
+    
+    qualityCompute(depthManager, qualityManager, weightManager) {
+      //get depthReading
+      var depth = depthManager.getDepthReading();
+      var weight = weightManager.getWeightReading();
+      console.log('TESSSSTTINGINGING::::depth::::::weight',depth,weight)
+      //compute calculation
+      var quality = depth + weight
+      qualityManager.setQualityReading(quality);
+      console.log('Quality data:',quality);
+    }
 
 
 
@@ -253,11 +266,14 @@ limitations under the License.
       this._temperatureSettingsManager.load(messageCenter);
       this._weightSettingsManager.load(messageCenter);
       this._depthSettingsManager.load(messageCenter);
+      this._qualitySettingsManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
       .then(() => this.loopReadDataFromFile(this._temperatureCrudManager, this._temperatureSettingsManager, this.temperatureDriver, this.temperatureTimeDelay, this.temperatureRedundantFile))
       .then(() => this.loopReadDataFromFile(this._weightCrudManager, this._weightSettingsManager, this.weightDriver, this.weightTimeDelay, this.weightRedundantFile))
-      .then(() => this.loopReadDataFromFile(this._depthCrudManager, this._depthSettingsManager, this.depthDriver, this.depthTimeDelay, this.depthRedundantFile));
+      .then(() => this.loopReadDataFromFile(this._depthCrudManager, this._depthSettingsManager, this.depthDriver, this.depthTimeDelay, this.depthRedundantFile))
+      .then(() => this.loopReadDataFromFile(this._depthSettingsManager, this._qualitySettingsManager, this.qualityCompute, this.depthTimeDelay, this._weightSettingsManager));
+      //.then(() => this.qualityCompute());
     }
 
     unload() {
@@ -267,7 +283,8 @@ limitations under the License.
       .then(() => console.log(this._depthCrudManager.unload(messageCenter)))
       .then(() => console.log(this._temperatureSettingsManager.unload(messageCenter)))
       .then(() => console.log(this._weightSettingsManager.unload(messageCenter)))
-      .then(() => console.log(this._depthSettingsManager.unload(messageCenter)));
+      .then(() => console.log(this._depthSettingsManager.unload(messageCenter)))
+      .then(() => console.log(this._qualitySettingsManager.unload(messageCenter)));
     }
   }
 
