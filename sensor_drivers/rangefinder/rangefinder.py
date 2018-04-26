@@ -5,34 +5,30 @@ data2 = []
 data  = []
 num_trials = 5
 
+
 with serial.Serial('/dev/ttyACM1', 115200, timeout=8) as ser:
     with serial.Serial('/dev/ttyACM2', 115200, timeout=8) as ser2:
 # Collect data
         for _ in range(num_trials):
-            # use readline, put a newline in the microbit, delay second microbit somewhat, that should block
             #s = ser.read(4)
             s = ser.readline().strip()
             if s:
-                data1.append(s)
-                print "data1:", s.strip()
+                data1.append(int(s))
+                #print "data1:", s.strip()
             else:
                 data1.append("error")
-                print "data1: nope"
+                #print "data1: nope"
         
-        #    #s = ser.read(3)
-        #    s = ser.readline()
-        #    data2.append(s)
-        #    print "data2", s
             s = ser2.readline().strip()
             if s:
-                data2.append(s)
-                print "data2:", s.strip()
+                data2.append(int(s))
+                #print "data2:", s.strip()
             else:
                 data2.append("error")
-                print "data2: nope"
+                #print "data2: nope"
 
-print data1
-print data2
+#print data1
+#print data2
 
 # Remove outliers
 flag = False
@@ -61,7 +57,7 @@ for index in range(min(len(data1), len(data2))):
     if top > 78:
         if bottom > 74:
             data.append(12)
-        elif data > 70:
+        elif bottom > 70:
             data.append(9)
         else:
             data.append(6)
@@ -74,10 +70,9 @@ for index in range(min(len(data1), len(data2))):
         data.append(30)
 
 
-print data
+#print data
 # Average the data and round to the nearest measurement
 ave = int(sum(data) / len(data))
-print ave
 
 if ave > 27:
     ave = 30
@@ -92,10 +87,8 @@ elif ave > 7:
 else:
     ave = 6
 
+
 print ave
 
 
-
-#line = ser.readline()
-#print s
 
