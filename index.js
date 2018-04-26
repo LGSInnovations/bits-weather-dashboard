@@ -42,24 +42,25 @@ limitations under the License.
       //    Set to false to read real values from sensors and turn on error handling
       this.temperature_stub_driver_on = true;
       this.weight_stub_driver_on      = true;
+      this.depth_stub_driver_on       = true;
       /////
 
       this._temperatureCrudManager = new TemperatureCrudManager();
-      this._weightCrudManager = new WeightCrudManager();
-      this._depthCrudManager = new DepthCrudManager();
+      this._weightCrudManager      = new WeightCrudManager();
+      this._depthCrudManager       = new DepthCrudManager();
       
       this._temperatureSettingsManager = new TemperatureSettingsManager();
-      this._weightSettingsManager = new WeightSettingsManager();
-      this._depthSettingsManager = new DepthSettingsManager();
+      this._weightSettingsManager      = new WeightSettingsManager();
+      this._depthSettingsManager       = new DepthSettingsManager();
       
       // Time in milliseconds
       this.temperatureTimeDelay = 5000;
-      this.weightTimeDelay = 5000;
-      this.depthTimeDelay = 500;
+      this.weightTimeDelay      = 5000;
+      this.depthTimeDelay       = 5000;
 
       this.temperatureRedundantFile = path.join(__dirname, 'backups/__temperatureRecords.csv');
-      this.weightRedundantFile = path.join(__dirname, 'backups/__weightRecords.csv');
-      this.depthRedundantFile = path.join(__dirname, 'backups/__depthRecords.csv');
+      this.weightRedundantFile      = path.join(__dirname, 'backups/__weightRecords.csv');
+      this.depthRedundantFile       = path.join(__dirname, 'backups/__depthRecords.csv');
 
       this.filePath = path.join(__dirname, 'data.csv');
     }
@@ -78,12 +79,12 @@ limitations under the License.
 
     // Stub for temp driver
     // Returns JSON object to store
-    temperatureDriver(crudManager, settingsManager, redundantFile) {
+    temperatureDriver(crudManager, settingsManager, redundantFile, stub_driver_on) {
       // Requires compiled executable of temperature sensor code
       // TODO: Add documentation describing binary compilation process or push binary to master
       
-      // Return fake readings
-      if (this.temperature_stub_driver_on) {
+      // Stub Driver: Return fake readings
+      if (stub_driver_on) {
           var fdate = '2014/10/30'
           var ftime = '07:00:36'
           var fcelsius = '23.31'
@@ -147,21 +148,22 @@ limitations under the License.
                 return;
             }
         });
+      }
     }
 
 
     // Returns JSON object to store
-    weightDriver(crudManager, settingsManager, redundantFile) {
+    weightDriver(crudManager, settingsManager, redundantFile, stub_driver_on) {
       var constDepthDiv = 1.05;
 
-      // Return fake readings
-      if (this.weight_stub_driver_on) {
+      // Stub Driver: Return fake readings
+      if (stub_driver_on) {
           var fdate   = '2014/10/30'
           var ftime   = '07:00:36'
           var fweight = '2.00'
-          var fdepthInInches = (parseFloat(weight)/constDepthDiv).toFixed(2);
+          var fdepthInInches = (parseFloat(fweight)/constDepthDiv).toFixed(2);
 
-          var fjsonObj = {'date': date, 'time': time, 'weight': weight, 'estimatedDepth': fdepthInInches};
+          var fjsonObj = {'date': fdate, 'time': ftime, 'weight': fweight, 'estimatedDepth': fdepthInInches};
 
           crudManager.storeData(fjsonObj); // TODO: Add error handling on fail
           settingsManager.setWeightReading(fweight);
@@ -211,7 +213,7 @@ limitations under the License.
                     return;
                   }
 
-                  var jsonObj = {'date': fdate, 'time': ftime, 'weight': fweight, 'estimatedDepth': depthInInches};
+                  var jsonObj = {'date': date, 'time': time, 'weight': weight, 'estimatedDepth': depthInInches};
                   crudManager.storeData(jsonObj); // TODO: Add error handling on fail
                   settingsManager.setWeightReading(weight);
                   fs.appendFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
@@ -225,62 +227,86 @@ limitations under the License.
                   return;
               }
           });
+      }
     }
 
 
 
-    // Stub for depth driver
     // Returns JSON object to store
-    depthDriver(crudManager, settingsManager, redundantFile) {
-      // Requires compiled executable of temperature sensor code
-      // TODO: Add documentation describing binary compilation process or push binary to master
+    depthDriver(crudManager, settingsManager, redundantFile, stub_driver_on) {
+      var constDepthDiv = 1.05;
 
-      // TODO: Pull out this filepath into class variables or pass as argument
-      filePath = '../bits-weather-dashboard/sensor_drivers/rangefinder/rangefinder.py';
-      exec('python ' + filePath,
-        function(error, stdout, stderr) {
-          //Use for debugging
-          //console.log("stdout=",stdout);
-          //console.log("stderr=",stderr);
-          //console.log("error=",error);
-          if(!error) {
-              var split_str = String(stdout).trim().split(" ");
-              //assert(split_str.length == 5, "Thermometer string is incorrectly formatted: " + stdout);
-              var date        = split_str[0];
-              var time        = split_str[1];
-              var distance    = split_str[2];
-              var jsonObj = {'date': date, 'time': time, 'distance': distance};
-              crudManager.storeData(jsonObj); // TODO: Add error handling on fail
-              settingsManager.setDepthReading(distance);
-              fs.writeFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
-                if (err) throw err;
-                //console.log('Temperature reading backed up: ', jsonObj);
-              });
-              console.log('Depth sensor recorded: ', jsonObj);
-          } else {
-              var fdate = '2014/10/30'
-              var ftime = '07:00:36'
-              var fdistance = '0.00'
-              var data = {'date': fdate, 'time': ftime, 'distance': fdistance};
+      // Stub Driver: Return fake readings
+      if (stub_driver_on) {
+          var fdate   = '2014/10/30'
+          var ftime   = '07:00:36'
+          var fdepth  = '6.00'
 
-              crudManager.storeData(data); // TODO: Add error handling on fail
-              settingsManager.setDepthReading(fdistance);
-              
-              fs.appendFile(redundantFile, JSON.stringify(data)+'\n', (err) => {
-                if (err) throw err;
-                //console.log('Fake temperature reading backed up: ', data);
-              });
-              console.log('FAKE: Depth data recorded: ', data);
-          }
-      });
+          var fjsonObj = {'date': fdate, 'time': ftime, 'depth': fdepth};
+
+          crudManager.storeData(fjsonObj); // TODO: Add error handling on fail
+          settingsManager.setDepthReading(fdepth);
+          
+          fs.appendFile(redundantFile, JSON.stringify(fjsonObj)+'\n', (err) => {
+            if (err) throw err;
+            //console.log('Fake temperature reading backed up: ', fjsonObj);
+          });
+          console.log('FAKE: Depth sensor recorded: ', fjsonObj);
+      }
+      else {
+
+          // TODO: Pull out this filepath into class variables or pass as argument
+          filePath = '../bits-weather-dashboard/sensor_drivers/rangefinder/rangefinder.py';
+          exec('python3 ' + filePath,
+            function(error, stdout, stderr) {
+              //Use for debugging
+              //console.log("stdout=",stdout);
+              //console.log("stderr=",stderr);
+              //console.log("error=",error);
+              if(!error) {
+                  var split_str = String(stdout).trim().split(" ");
+                  if (split_str.length != 4) {
+                    console.log("ERROR: Depth driver returned improperly formatted string: " + stdout);
+                  }
+
+                  var date   = split_str[0];
+                  var time   = split_str[1];
+                  var depth  = split_str[2];
+
+                  if (date.length != 10) {
+                    console.log("ERROR: Depth driver date is incorrectly formatted: " + date);
+                    return;
+                  }
+                  if (time.length !=  8) {
+                    console.log("ERROR: Depth driver time is incorrectly formatted: " + time);
+                    return;
+                  }
+                  if (depth < 0 || depth > 30) {
+                    console.log("ERROR: Depth driver reading is out of bounds: " + depth);
+                    return;
+                  }
+
+                  var jsonObj = {'date': date, 'time': time, 'depth': depth};
+                  crudManager.storeData(jsonObj); // TODO: Add error handling on fail
+                  settingsManager.setDepthReading(depth);
+                  fs.appendFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
+                    if (err) throw err;
+                    //console.log('Temperature reading backed up: ', jsonObj);
+                  });
+                  console.log('Depth sensor recorded: ', jsonObj);
+              } else {
+                  console.log("ERROR with the depth sensor");
+                  console.log(error);
+                  return;
+              }
+          });
+      }
     }
-
-
 
 
     // Generic looping function, used by each sensor
-    loopReadDataFromFile(crudManager,settingsManager, driverFunction, timeDelay, redundantFile) {
-      driverFunction(crudManager, settingsManager, redundantFile);
+    loopReadDataFromFile(crudManager,settingsManager, driverFunction, timeDelay, redundantFile, stub_driver_on) {
+      driverFunction(crudManager, settingsManager, redundantFile, stub_driver_on);
       setTimeout(this.loopReadDataFromFile.bind(this), timeDelay, crudManager, settingsManager, driverFunction, timeDelay, redundantFile);
     }
 
@@ -311,7 +337,8 @@ limitations under the License.
                          this._temperatureSettingsManager,
                          this.temperatureDriver,
                          this.temperatureTimeDelay,
-                         this.temperatureRedundantFile ))
+                         this.temperatureRedundantFile,
+                         this.temperature_stub_driver_on))
 
       // Weight sensor loop
       .then(() => this.loopReadDataFromFile(
@@ -319,7 +346,8 @@ limitations under the License.
                          this._weightSettingsManager,
                          this.weightDriver,
                          this.weightTimeDelay,
-                         this.weightRedundantFile ));
+                         this.weightRedundantFile,
+                         this.weight_stub_driver_on))
 
       // Depth sensor loop
       .then(() => this.loopReadDataFromFile(
@@ -327,7 +355,8 @@ limitations under the License.
                          this._depthSettingsManager,
                          this.depthDriver,
                          this.depthTimeDelay,
-                         this.depthRedundantFile));
+                         this.depthRedundantFile,
+                         this.depth_stub_driver_on));
     }
 
     unload() {
