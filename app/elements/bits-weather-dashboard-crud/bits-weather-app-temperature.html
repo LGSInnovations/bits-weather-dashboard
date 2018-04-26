@@ -25,6 +25,7 @@
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-tdata.html">
 <link rel="import" href="./ochart.html">
+<link rel="import" href="../../bower_components/iron-scroll-target-behavior.html">
 
 
 <dom-module id="weather-dashboard-app-temperature">
@@ -56,29 +57,39 @@
       .column {
           float: left;
           width: 45.00%;
-          padding: 40px 20px 0px 20px;
+          padding: 20px 20px 0px 20px;
       }
       .row {
         padding-bottom: 20px;
       }
       .heading {
-          font-size: 30px;
+          font-size: 25px;
       }
       .reading {
-          font-size: 80px;
+          font-size: 70px;
+      }
+      table, th, td {
+        border: 2px solid black;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 20px;
+      }
+      td {
+        width: 30%;
       }
     </style>
 
     <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{reading}}"></settings-document>
-    
+
     <base-header-layout x-title="Temperature" no-back>
       <div class="row">
         <div class="column">
           <div class="row">
             <base-single-grid-item-wrapper>
               <div class="heading">Current Temperature</div>
-              <div class="reading">{{reading}}</div>
+              <div class="reading">{{reading}} &degF</div>
             </base-single-grid-item-wrapper>
           </div>
           <div class="row">
@@ -93,16 +104,24 @@
             <div class="row">
               <div class="heading">History</div>
                 <div class="content">
-                  <template>
-                    <div id="chartdiv"></div>
-                  </template>
-                  <paper-listbox>
-                    <template is="dom-repeat" items="[[items]]">
-                      <paper-item>Temp reading date: [[item.date]]</paper-item>
-                      <paper-item>Temp reading time: [[item.time]]</paper-item>
-                      <paper-item>Temp reading data: [[item.celsius]]</paper-item>
-                    </template>
-                  </paper-listbox>
+                  <div id="scrollable-element" style="display:block;height:400px;overflow-y:auto;">
+                  <x-element scroll-target="scrollable-element">
+                      <table style=width:"100%">
+                      <tr>
+                        <td>Date</td>
+                        <td>Time</td>
+                        <td>Temperature</td>
+                      </tr>
+                      <template is="dom-repeat" items="[[items]]">
+                        <tr>
+                          <td>[[item.date]]</td>
+                          <td>[[item.time]]</td>
+                          <td>[[item.celsius]] &degF</td>
+                        </tr>
+                      </template>
+                      </table>
+                  </x-element>
+                  </div>
                 </div>
             </div>
           </base-single-grid-item-wrapper>
