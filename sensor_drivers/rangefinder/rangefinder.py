@@ -1,87 +1,95 @@
-#!/usr/bin/python
-import time
-import usb.core
-import usb.util
+import serial
 import datetime
-from sys import exit
 
-# DYMO 100 lbs
-VENDOR_ID = 0x0922
-PRODUCT_ID = 0x8009
-
-# Find the USB device
-dev = usb.core.find(idVendor=VENDOR_ID,
-                       idProduct=PRODUCT_ID)
-
-def main():
-    try:
-        # Was device found?
-        if dev is None:
-            print("Device not found")
-            exit()
-        else:
-            # Deactivate other drivers
-            interface = 0
-            if dev.is_kernel_driver_active(interface) is True:
-                dev.detach_kernel_driver(interface)
-
-                # Use the default configuration
-                dev.set_configuration()
-                usb.util.claim_interface(dev, interface)
-
-            listen()
-
-    except KeyboardInterrupt as e: 
-        exit()
+data1 = []
+data2 = []
+data  = []
+num_trials = 5
 
 
-def grab():
-    try:
-        # Set first endpoint
-        endpoint = dev[0][(0,0)][0]
-
-        # Read a data packet. Try 10 times before failure.
-        attempts = 10
-        data = None
-        while data is None and attempts > 0:
-            try:
-                data = dev.read(endpoint.bEndpointAddress,
-                                endpoint.wMaxPacketSize)
-            except usb.core.USBError as e:
-                data = None
-                if e.args == ('Operation timed out',):
-                    attempts -= 1
-                    #print("timed out... trying again")
-                    if attempts < 1:
-                        print('Timed out')
-                    continue
-        return data
-
-    except usb.core.USBError as e:
-        print("USBError:", str(e.args))
-        exit()
-    except IndexError as e:
-        print("IndexError:", str(e.args))
-        exit()
-
-
-def listen():
-    DATA_MODE_KG  = 3
-    DATA_MODE_LBS = 12
-
-    data = grab()
-
-    # Interpret data
-    if data != None:
-        raw_weight = (data[4] + (data[5] * 256)) / 10.0
-        if data[2] != DATA_MODE_LBS:
-            print("Data is not in lbs")
-            exit()
+with serial.Serial('/dev/ttyACM1', 115200, timeout=8) as ser:
+    with serial.Serial('/dev/ttyACM2', 115200, timeout=8) as ser2:
+# Collect data
+        for _ in range(num_trials):
+            #s = ser.read(4)
+            s = ser.readline().strip()
+            if s:
+                data1.append(int(s))
+                #print "data1:", s.strip()
+            else:
+                data1.append("error")
+                #print "data1: nope"
         
-        print("%s %.1f lbs" % (datetime.date.today().strftime("%Y/%m/%d %H:%M:%S"), raw_weight))
+            s = ser2.readline().strip()
+            if s:
+                data2.append(int(s))
+                #print "data2:", s.strip()
+            else:
+                data2.append("error")
+                #print "data2: nope"
+
+#print data1
+#print data2
+
+# Remove outliers
+flag = False
+
+while "error" in data1:
+    data1.remove("error")
+    flag = True
+while "error" in data2:
+    data2.remove("error")
+    flag = True
+
+if len(data1) > 2 and not flag:
+    data1.remove(max(data1))
+    data1.remove(max(data1))
+
+if len(data2) > 2 and not flag:
+    data2.remove(min(data2))
+    data2.remove(min(data2))
+
+
+# Execute distance logic
+for index in range(min(len(data1), len(data2))):
+    top    = data1[index]
+    bottom = data2[index]
+
+    if top > 78:
+        if bottom > 74:
+            data.append(12)
+        elif bottom > 70:
+            data.append(9)
+        else:
+            data.append(6)
+    elif top > 73:
+        if bottom < 76:
+            data.append(18)
+        else:
+            data.append(24)
     else:
-        print("Error grabbing data")
+        data.append(30)
+
+
+#print data
+# Average the data and round to the nearest measurement
+ave = int(sum(data) / len(data))
+
+if ave > 27:
+    ave = 30
+elif ave > 21:
+    ave = 24
+elif ave > 15:
+    ave = 18
+elif ave > 10:
+    ave = 12
+elif ave > 7:
+    ave = 9
+else:
+    ave = 6
+
+
+print("%s %d in" % (datetime.date.today().strftime("%Y/%m/%d %H:%M:%S"), ave))
 
 
 
-main()

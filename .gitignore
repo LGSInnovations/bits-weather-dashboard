@@ -1,2 +1,4 @@
 pcsensor
+*.csv
+backups/*.csv
 __*

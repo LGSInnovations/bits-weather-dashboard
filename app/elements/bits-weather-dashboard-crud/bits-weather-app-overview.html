@@ -77,8 +77,10 @@
     <settings-document tag="current#WeightSettings" key="reading" data="{{wreading}}"></settings-document>
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{treading}}"></settings-document>
     <settings-document tag="current#DepthSettings" key="reading" data="{{dreading}}"></settings-document>
+    <settings-document tag="current#QualitySettings" key="reading" data="{{qreading}}"></settings-document>
       <body>
       <img class="bg" src="skiing-background-6.jpg" alt="">
+      <base-header-layout x-title="Overview"  no-back>
       <div class="container">
           <div class="column">
             <base-single-grid-item-wrapper>
@@ -101,7 +103,7 @@
           <div class="column">
             <base-single-grid-item-wrapper>
               <div id="section">Snow Condition:</div>
-              <div class="reading">Powder</div>
+              <div class="reading">{{qreading}}</div>
             </base-single-grid-item-wrapper>
           </div>
       </div>
