@@ -24,6 +24,7 @@ limitations under the License.
   const TemperatureSettingsManager = require('./lib/settings-manager/temperature-settings-manager.js');
   const WeightSettingsManager = require('./lib/settings-manager/weight-settings-manager.js');
   const DepthSettingsManager = require('./lib/settings-manager/depth-settings-manager.js');
+  const QualitySettingsManager = require('./lib/settings-manager/quality-settings-manager.js');
   
   var path       = require('path'),
       fs         = require('fs'),
@@ -52,6 +53,7 @@ limitations under the License.
       this._temperatureSettingsManager = new TemperatureSettingsManager();
       this._weightSettingsManager      = new WeightSettingsManager();
       this._depthSettingsManager       = new DepthSettingsManager();
+      this._qualitySettingsManager = new QualitySettingsManager();
       
       // Time in milliseconds
       this.temperatureTimeDelay = 5000;
@@ -303,6 +305,36 @@ limitations under the License.
       }
     }
 
+    qualityCompute(depthManager, qualityManager, weightManager) {      
+      weightManager.getWeightReading()
+        .then(weight => {
+          console.log('weight reading',weight)
+          return Promise.all([depthManager.getDepthReading(),weight]);
+        })
+        .then(([depth,weight]) => {
+          console.log("weight",weight);
+          console.log("depth",depth);
+
+          //calculate snow quality metric
+          var quality = Number(weight) / (Number(depth) * 144)
+          let strQuality;
+          if (quality > 0.011) {
+            strQuality = "Icy";
+          }
+          else if (quality > 0.0072) {
+            strQuality = "Packed Snow";
+          }
+          else if (quality > 0.0025) {
+            strQuality = "Wet Powder";
+          }
+          else {
+            strQuality = "Powder";
+          }
+
+          console.log('QQ', strQuality)
+          qualityManager.setQualityReading(strQuality);
+        });
+    }
 
     // Generic looping function, used by each sensor
     loopReadDataFromFile(crudManager,settingsManager, driverFunction, timeDelay, redundantFile, stub_driver_on) {
@@ -328,6 +360,7 @@ limitations under the License.
       this._temperatureSettingsManager.load(messageCenter);
       this._weightSettingsManager.load(messageCenter);
       this._depthSettingsManager.load(messageCenter);
+      this._qualitySettingsManager.load(messageCenter);
       return Promise.resolve()
       .then(() => console.log('Loaded Weather Dashboard Module!'))
       
@@ -356,7 +389,17 @@ limitations under the License.
                          this.depthDriver,
                          this.depthTimeDelay,
                          this.depthRedundantFile,
-                         this.depth_stub_driver_on));
+                         this.depth_stub_driver_on))
+
+      // Snow quality loop
+      .then(() => this.loopReadDataFromFile(
+                         this._depthSettingsManager,
+                         this._qualitySettingsManager,
+                         this.qualityCompute,
+                         this.depthTimeDelay,
+                         this._weightSettingsManager));
+
+      //.then(() => this.qualityCompute());
     }
 
     unload() {
@@ -366,7 +409,8 @@ limitations under the License.
       .then(() => console.log(this._depthCrudManager.unload(messageCenter)))
       .then(() => console.log(this._temperatureSettingsManager.unload(messageCenter)))
       .then(() => console.log(this._weightSettingsManager.unload(messageCenter)))
-      .then(() => console.log(this._depthSettingsManager.unload(messageCenter)));
+      .then(() => console.log(this._depthSettingsManager.unload(messageCenter)))
+      .then(() => console.log(this._qualitySettingsManager.unload(messageCenter)));
     }
   }
 

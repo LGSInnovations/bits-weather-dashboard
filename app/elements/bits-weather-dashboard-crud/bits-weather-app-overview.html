@@ -99,6 +99,7 @@
     <settings-document tag="current#WeightSettings" key="reading" data="{{wreading}}"></settings-document>
     <settings-document tag="current#TemperatureSettings" key="reading" data="{{treading}}"></settings-document>
     <settings-document tag="current#DepthSettings" key="reading" data="{{dreading}}"></settings-document>
+    <settings-document tag="current#QualitySettings" key="reading" data="{{qreading}}"></settings-document>
       <base-header-layout x-title="Overview"  no-back>
       <div class="container">
         <div class="heading" id="section">Temperature is:
@@ -110,6 +111,9 @@
         <div class="silver" id="section">Depth is:
             <div class="reading">{{dreading}}</div>
       </div>
+      <div class="silver" id="section">Snow Quality is:
+          <div class="reading">{{qreading}}</div>
+    </div>
       <div class="content">
      </base-header-layout>
      <!--Saving some work with fetching individual elements for when we implement findMostRecent
