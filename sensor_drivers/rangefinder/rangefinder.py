@@ -1,4 +1,5 @@
 import serial
+import datetime
 
 data1 = []
 data2 = []
@@ -88,7 +89,7 @@ else:
     ave = 6
 
 
-print ave
+print("%s %d in" % (datetime.date.today().strftime("%Y/%m/%d %H:%M:%S"), ave))
 
 
 
