@@ -14,6 +14,7 @@
    limitations under the License.
  -->
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../settings-document/settings-document.html">
 <!-- <link rel="import" href="polymer-grid-layout.html"> -->
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
@@ -21,7 +22,9 @@
 <link rel="import" href="../base-layout/base-single-grid-item-wrapper/base-single-grid-item-wrapper.html">
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
+<link rel="import" href="./weather-dashboard-wdata.html">
 <link rel="import" href="./weather-dashboard-ddata.html">
+<link rel="import" href="./weather-dashboard-tdata.html">
 
 <dom-module id="weather-dashboard-app-overview">
   <template>
@@ -89,19 +92,28 @@
         width: 250px;
       }
     </style>
+    
+    <weather-dashboard-wdata items="{{items}}"></weather-dashboard-wdata>
+    <weather-dashboard-ddata items="{{items}}"></weather-dashboard-ddata>
+    <weather-dashboard-tdata items="{{items}}"></weather-dashboard-tdata>
+    <settings-document tag="current#WeightSettings" key="reading" data="{{wreading}}"></settings-document>
+    <settings-document tag="current#TemperatureSettings" key="reading" data="{{treading}}"></settings-document>
+    <settings-document tag="current#DepthSettings" key="reading" data="{{dreading}}"></settings-document>
+    <settings-document tag="current#QualitySettings" key="reading" data="{{qreading}}"></settings-document>
       <base-header-layout x-title="Overview"  no-back>
       <div class="container">
         <div class="heading" id="section">Temperature is:
-          <div class="reading">25F
-          </div>
+          <div class="reading">{{treading}}</div>
         </div>
         <div class="heading" id="section">Avg snowfall is:
-          <div class="reading">6.5in
-          </div></div>
-        <div class="silver" id="section">Pressure is:
-            <div class="reading">3.32PSI
-            </div>
+          <div class="reading">{{wreading}}</div>
+        </div>
+        <div class="silver" id="section">Depth is:
+            <div class="reading">{{dreading}}</div>
       </div>
+      <div class="silver" id="section">Snow Quality is:
+          <div class="reading">{{qreading}}</div>
+    </div>
       <div class="content">
      </base-header-layout>
      <!--Saving some work with fetching individual elements for when we implement findMostRecent
