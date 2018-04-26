@@ -67,6 +67,7 @@
     </style>
 
     <weather-dashboard-wdata items="{{items}}"></weather-dashboard-wdata>
+    <settings-document tag="current#WeightSettings" key="reading" data="{{reading}}"></settings-document>
 
     <base-header-layout x-title="Depth" no-back>
       <div class="row">
@@ -74,7 +75,7 @@
           <div class="row">
             <base-single-grid-item-wrapper>
               <div class="heading">Current Snow Depth</div>
-              <div class="reading">6.5 in</div>
+              <div class="reading">{{reading}}</div>
             </base-single-grid-item-wrapper>
           </div>
           <div class="row">
