@@ -397,7 +397,7 @@ limitations under the License.
                          this._depthSettingsManager,
                          this._qualitySettingsManager,
                          this.qualityCompute,
-                         this.depthTimeDelay,
+                         1000,
                          this._weightSettingsManager));
 
       //.then(() => this.qualityCompute());
