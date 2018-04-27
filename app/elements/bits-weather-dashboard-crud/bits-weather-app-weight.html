@@ -69,20 +69,19 @@
     <weather-dashboard-wdata items="{{items}}"></weather-dashboard-wdata>
     <settings-document tag="current#WeightSettings" key="reading" data="{{reading}}"></settings-document>
 
-    <base-header-layout x-title="Depth" no-back>
+    <base-header-layout x-title="Weight" no-back>
       <div class="row">
         <div class="column">
           <div class="row">
             <base-single-grid-item-wrapper>
-              <div class="heading">Current Snow Depth</div>
-              <div class="reading">{{reading}}</div>
+              <div class="heading">Current Snow Weight</div>
+              <div class="reading">{{reading}} lbs</div>
             </base-single-grid-item-wrapper>
           </div>
           <div class="row">
-            <base-single-grid-item-wrapper>
+            <!-- <base-single-grid-item-wrapper>
               <div class="heading">Graph</div>
-              <img src="depth.jpg"></img>
-            </base-single-grid-item-wrapper>
+            </base-single-grid-item-wrapper> -->
           </div>
         </div>
         <div class="column">
