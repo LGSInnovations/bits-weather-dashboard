@@ -78,7 +78,7 @@ def listen():
             print("Data is not in lbs")
             exit()
         
-        print("%s %.1f lbs" % (datetime.date.today().strftime("%Y/%m/%d %H:%M:%S"), raw_weight))
+        print("%s %.1f lbs" % (datetime.datetime.today().strftime("%Y/%m/%d %H:%M:%S"), raw_weight))
     else:
         print("Error grabbing data")
 
