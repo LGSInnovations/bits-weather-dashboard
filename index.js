@@ -41,9 +41,9 @@ limitations under the License.
       //// STUB DRIVER CONTROLS:
       //    Set to true to read fake values from stub drivers
       //    Set to false to read real values from sensors and turn on error handling
-      this.temperature_stub_driver_on = true;
-      this.weight_stub_driver_on      = true;
-      this.depth_stub_driver_on       = true;
+      this.temperature_stub_driver_on = false;
+      this.weight_stub_driver_on      = false;
+      this.depth_stub_driver_on       = false;
       /////
 
       this._temperatureCrudManager = new TemperatureCrudManager();
@@ -87,9 +87,9 @@ limitations under the License.
       
       // Stub Driver: Return fake readings
       if (stub_driver_on) {
-          var fdate = '2014/10/30'
+          var fdate = '2018/04/26'
           var ftime = '07:00:36'
-          var fcelsius = '23.31'
+          var fcelsius = '69.31'
           var fjsonObj = {'date': fdate, 'time': ftime, 'celsius': fcelsius};
 
           crudManager.storeData(fjsonObj); // TODO: Add error handling on fail
@@ -103,8 +103,8 @@ limitations under the License.
 
       else {
         // TODO: Pull out this filepath into class variables or pass as argument
-        filePath = '../bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
-        exec('.' + filePath,
+        filePath = '/var/bits/base/modules/modules/bits-weather-dashboard/sensor_drivers/thermometer/pcsensor';
+        exec(filePath,
           function(error, stdout, stderr) {
             //Use for debugging
             //console.log("stdout=",stdout);
@@ -120,8 +120,9 @@ limitations under the License.
                 var date       = split_str[0];
                 var time       = split_str[1];
                 var fahrenheit = split_str[3].slice(0, -1);
-                var celsius    = split_str[4].slice(0, -1);
-                var jsonObj = {'date': date, 'time': time, 'celsius': celsius};
+                //var celsius    = split_str[4].slice(0, -1);
+		var celsius    = fahrenheit;
+                var jsonObj = {'date': date, 'time': time, 'celsius': fahrenheit};
 
                 if (date.length != 10) {
                   console.log("ERROR: Thermometer date is incorrectly formatted: " + date);
@@ -131,10 +132,10 @@ limitations under the License.
                   console.log("ERROR: Thermometer time is incorrectly formatted: " + time);
                   return;
                 }
-                if (celsius < -10 || celsius > 50) {
-                  console.log("ERROR: Thermometer reading out of bounds: " + celsius);
-                  return;
-                }
+                //if (celsius < -10 || celsius > 50) {
+                //  console.log("ERROR: Thermometer reading out of bounds: " + celsius);
+                //  return;
+                //}
 
                 crudManager.storeData(jsonObj); // TODO: Add error handling on fail
                 settingsManager.setTempReading(celsius);
@@ -160,9 +161,9 @@ limitations under the License.
 
       // Stub Driver: Return fake readings
       if (stub_driver_on) {
-          var fdate   = '2014/10/30'
+          var fdate   = '2018/04/26'
           var ftime   = '07:00:36'
-          var fweight = '2.00'
+          var fweight = '0.00'
           var fdepthInInches = (parseFloat(fweight)/constDepthDiv).toFixed(2);
 
           var fjsonObj = {'date': fdate, 'time': ftime, 'weight': fweight, 'estimatedDepth': fdepthInInches};
@@ -179,7 +180,7 @@ limitations under the License.
       else {
 
           // TODO: Pull out this filepath into class variables or pass as argument
-          filePath = '../bits-weather-dashboard/sensor_drivers/scale/scale.py';
+          filePath = '/var/bits/base/modules/modules/bits-weather-dashboard/sensor_drivers/scale/scale.py';
           exec('python3 ' + filePath,
             function(error, stdout, stderr) {
               //Use for debugging
@@ -240,9 +241,9 @@ limitations under the License.
 
       // Stub Driver: Return fake readings
       if (stub_driver_on) {
-          var fdate   = '2014/10/30'
+          var fdate   = '2018/04/26'
           var ftime   = '07:00:36'
-          var fdepth  = '6.00'
+          var fdepth  = '12.00'
 
           var fjsonObj = {'date': fdate, 'time': ftime, 'depth': fdepth};
 
@@ -258,8 +259,8 @@ limitations under the License.
       else {
 
           // TODO: Pull out this filepath into class variables or pass as argument
-          filePath = '../bits-weather-dashboard/sensor_drivers/rangefinder/rangefinder.py';
-          exec('python3 ' + filePath,
+          filePath = '/var/bits/base/modules/modules/bits-weather-dashboard/sensor_drivers/rangefinder/rangefinder.py';
+          exec('python ' + filePath,
             function(error, stdout, stderr) {
               //Use for debugging
               //console.log("stdout=",stdout);
