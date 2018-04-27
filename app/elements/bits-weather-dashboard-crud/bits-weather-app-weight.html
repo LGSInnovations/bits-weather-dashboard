@@ -23,16 +23,12 @@
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-wdata.html">
+<link rel="import" href="../../bower_components/iron-scroll-target-behavior.html">
+
 
 <dom-module id="weather-dashboard-app-weight">
   <template>
-    <!--<style include="base-shared-styles">
-      :host {
-        display: block;
-        position: relative;
-        height: 100%;
-      }
-    </style>-->
+
     <style is="custom-style">
       .container {
           @apply(--layout-grid-justify-items-center);
@@ -88,14 +84,26 @@
           <base-single-grid-item-wrapper>
             <div class="row">
               <div class="heading">History</div>
-                <div class="content">
-                  <template>
-                    <div id="chartdiv"></div>
-                  </template>
-                  <paper-listbox>
-
-                  </paper-listbox>
+              <div class="content">
+                <div id="scrollable-element" style="display:block;height:400px;overflow-y:auto;">
+                <x-element scroll-target="scrollable-element">
+                    <table style=width:"100%">
+                    <tr>
+                      <td>Date</td>
+                      <td>Time</td>
+                      <td>Weight</td>
+                    </tr>
+                    <template is="dom-repeat" items="[[items]]">
+                      <tr>
+                        <td>[[item.date]]</td>
+                        <td>[[item.time]]</td>
+                        <td>[[item.weight]] lbs</td>
+                      </tr>
+                    </template>
+                    </table>
+                </x-element>
                 </div>
+              </div>
             </div>
           </base-single-grid-item-wrapper>
         </div>

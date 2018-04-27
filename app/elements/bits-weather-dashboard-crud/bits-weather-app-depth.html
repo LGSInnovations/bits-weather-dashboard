@@ -23,6 +23,8 @@
 <link rel="import" href="../base-layout/base-drawer-layout/base-drawer-layout.html">
 <link rel="import" href="../base-shared-styles/base-shared-styles.html">
 <link rel="import" href="./weather-dashboard-ddata.html">
+<link rel="import" href="../../bower_components/iron-scroll-target-behavior.html">
+
 
 <dom-module id="weather-dashboard-app-depth">
   <template>
@@ -71,6 +73,7 @@
     </style>
 
     <weather-dashboard-ddata items="{{items}}"></weather-dashboard-ddata>
+
     <settings-document tag="current#DepthSettings" key="reading" data="{{reading}}"></settings-document>
 
     <base-header-layout x-title="Depth" no-back>
@@ -93,14 +96,26 @@
           <base-single-grid-item-wrapper>
             <div class="row">
               <div class="heading">History</div>
-                <div class="content">
-                  <template>
-                    <div id="chartdiv"></div>
-                  </template>
-                  <paper-listbox>
-
-                  </paper-listbox>
+              <div class="content">
+                <div id="scrollable-element" style="display:block;height:400px;overflow-y:auto;">
+                <x-element scroll-target="scrollable-element">
+                    <table style=width:"100%">
+                    <tr>
+                      <td>Date</td>
+                      <td>Time</td>
+                      <td>Depth</td>
+                    </tr>
+                    <template is="dom-repeat" items="[[items]]">
+                      <tr>
+                        <td>[[item.date]]</td>
+                        <td>[[item.time]]</td>
+                        <td>[[item.depth]] in</td>
+                      </tr>
+                    </template>
+                    </table>
+                </x-element>
                 </div>
+              </div>
             </div>
           </base-single-grid-item-wrapper>
         </div>
