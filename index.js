@@ -259,7 +259,7 @@ limitations under the License.
       else {
 
           // TODO: Pull out this filepath into class variables or pass as argument
-          filePath = '/var/bits/base/modules/modules/bits-weather-dashboard/sensor_drivers/rangefinder/rangefinder.py';
+          filePath = '/var/bits/base/modules/modules/bits-weather-dashboard/sensor_drivers/microbit/microbit.py';
           exec('python ' + filePath,
             function(error, stdout, stderr) {
               //Use for debugging
