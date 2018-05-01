@@ -79,11 +79,9 @@ limitations under the License.
       this.depthTimeDelay = newDepthTimeDelay;
     }
 
-    // Stub for temp driver
     // Returns JSON object to store
+    // Requires compiled executable of temperature sensor code
     temperatureDriver(crudManager, settingsManager, redundantFile, stub_driver_on) {
-      // Requires compiled executable of temperature sensor code
-      // TODO: Add documentation describing binary compilation process or push binary to master
       
       // Stub Driver: Return fake readings
       if (stub_driver_on) {
@@ -120,8 +118,7 @@ limitations under the License.
                 var date       = split_str[0];
                 var time       = split_str[1];
                 var fahrenheit = split_str[3].slice(0, -1);
-                //var celsius    = split_str[4].slice(0, -1);
-		var celsius    = fahrenheit;
+                var celsius    = split_str[4].slice(0, -1);
                 var jsonObj = {'date': date, 'time': time, 'celsius': fahrenheit};
 
                 if (date.length != 10) {
@@ -132,13 +129,17 @@ limitations under the License.
                   console.log("ERROR: Thermometer time is incorrectly formatted: " + time);
                   return;
                 }
-                //if (celsius < -10 || celsius > 50) {
-                //  console.log("ERROR: Thermometer reading out of bounds: " + celsius);
-                //  return;
-                //}
+                if (celsius < -10 || celsius > 50) {
+                  console.log("ERROR: Thermometer reading out of bounds: " + celsius);
+                  return;
+                }
+                if (fahrenheit < -30 || farenheit > 150) {
+                  console.log("ERROR: Thermometer reading out of bounds: " + fahrenheit);
+                  return;
+                }
 
                 crudManager.storeData(jsonObj); // TODO: Add error handling on fail
-                settingsManager.setTempReading(celsius);
+                settingsManager.setTempReading(fahrenheit);
                 fs.appendFile(redundantFile, JSON.stringify(jsonObj)+'\n', (err) => {
                   if (err) throw err;
                   //console.log('Temperature reading backed up: ', jsonObj);
@@ -259,7 +260,7 @@ limitations under the License.
       else {
 
           // TODO: Pull out this filepath into class variables or pass as argument
-          filePath = '/var/bits/base/modules/modules/bits-weather-dashboard/sensor_drivers/rangefinder/rangefinder.py';
+          filePath = '/var/bits/base/modules/modules/bits-weather-dashboard/sensor_drivers/microbit/microbit.py';
           exec('python ' + filePath,
             function(error, stdout, stderr) {
               //Use for debugging
@@ -306,6 +307,8 @@ limitations under the License.
       }
     }
 
+    
+    // Compute the quality of snow based on density
     qualityCompute(depthManager, qualityManager, weightManager) {      
       weightManager.getWeightReading()
         .then(weight => {
@@ -399,8 +402,6 @@ limitations under the License.
                          this.qualityCompute,
                          1000,
                          this._weightSettingsManager));
-
-      //.then(() => this.qualityCompute());
     }
 
     unload() {
